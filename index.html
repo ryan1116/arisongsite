@@ -43,7 +43,7 @@
         }
 
         /* ===== Utility ===== */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .container { max-width: 1200px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
         .section-label {
             font-family: var(--font-en);
             font-size: 14px;
@@ -159,7 +159,8 @@
         .hero-content {
             position: relative;
             z-index: 2;
-            padding: 140px 0 100px;
+            padding-top: 140px;
+            padding-bottom: 100px;
         }
         .hero-badge {
             display: inline-flex;
@@ -732,6 +733,8 @@
         }
 
         @media (max-width: 768px) {
+            .container { padding-left: 20px !important; padding-right: 20px !important; }
+
             .nav-links {
                 display: none;
                 position: absolute;
@@ -747,10 +750,11 @@
             .nav-toggle { display: block; }
 
             .hero { min-height: auto; }
-            .hero-content { padding: 120px 0 80px; }
-            .hero h1 { font-size: 36px; }
-            .hero-sub { font-size: 16px; }
+            .hero-content { padding-top: 120px; padding-bottom: 80px; }
+            .hero h1 { font-size: 32px; }
+            .hero-sub { font-size: 15px; }
             .hero-stats { flex-direction: column; gap: 24px; }
+            .hero-stats .hero-stat .number { font-size: 28px; }
             .hero-buttons { flex-direction: column; }
             .hero-buttons a { text-align: center; justify-content: center; }
 
@@ -759,7 +763,15 @@
             .footer-inner { flex-direction: column; gap: 32px; }
             .footer-contact { text-align: left; }
             .footer-contact-item { justify-content: flex-start; }
-            .cta h2 { font-size: 32px; }
+            .cta { padding: 80px 0; }
+            .cta h2 { font-size: 28px; }
+            .cta p { font-size: 15px; }
+            .cta .btn-primary { padding: 16px 36px; font-size: 15px; }
+
+            .service-highlight-card { padding: 32px 24px; }
+            .phase-card { padding: 32px 24px; }
+            .lineup-card { padding: 36px 28px; }
+            .partner-card { padding: 28px 24px; }
 
             .company-row { flex-wrap: wrap; padding: 16px 24px; }
             .company-row-label { width: 100%; margin-bottom: 4px; }
@@ -975,14 +987,14 @@
                     <div class="partner-icon blue">&#128161;</div>
                     <div>
                         <h4>파트너</h4>
-                        <p>비엑스컨설팅 (BX Consulting)<br>엑스퍼트 (EXPERT)</p>
+                        <p>비엑스컨설팅 (BX Consulting)<br>엑스퍼트 컨설팅 (EXPERT)</p>
                     </div>
                 </div>
                 <div class="partner-card">
                     <div class="partner-icon purple">&#129309;</div>
                     <div>
                         <h4>주요 고객사</h4>
-                        <p>하나증권, 농협은행, 성균관대학교</p>
+                        <p>하나증권, 농협은행, 성균관대학교 창업지원단</p>
                     </div>
                 </div>
             </div>
