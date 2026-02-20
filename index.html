@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아리송컴퍼니(주) | AX Sprint - AI Transformation</title>
+    <meta name="description" content="전략에서 실행까지, AI Transformation의 모든 것. 아리송컴퍼니는 9주 완성 AI 프로토타입 AX Sprint를 통해 기업의 AI 전환을 지원합니다.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ===== Reset & Base ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --navy: #1a1f3a;
+            --navy-deep: #12152a;
+            --navy-light: #252a4a;
+            --teal: #2dd4a8;
+            --teal-dark: #20b090;
+            --orange: #f5a623;
+            --blue-accent: #3b82f6;
+            --white: #ffffff;
+            --gray-50: #f8f9fc;
+            --gray-100: #f1f3f8;
+            --gray-200: #e2e6ef;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --font-kr: 'Noto Sans KR', sans-serif;
+            --font-en: 'Inter', sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-kr);
+            color: var(--gray-800);
+            line-height: 1.7;
+            overflow-x: hidden;
+            background: var(--white);
+        }
+
+        /* ===== Utility ===== */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .section-label {
+            font-family: var(--font-en);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--teal);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 20px;
+            color: var(--gray-800);
+        }
+        .section-desc {
+            font-size: 17px;
+            color: var(--gray-500);
+            line-height: 1.8;
+            max-width: 640px;
+        }
+
+        /* ===== Navigation ===== */
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(26, 31, 58, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s ease;
+        }
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+        .nav-logo {
+            font-family: var(--font-en);
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .nav-logo .highlight {
+            color: var(--teal);
+        }
+        .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+        .nav-links a {
+            font-size: 15px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--white); }
+        .nav-cta {
+            padding: 10px 24px;
+            background: var(--teal);
+            color: var(--navy) !important;
+            border-radius: 8px;
+            font-weight: 700 !important;
+            font-size: 14px !important;
+            transition: all 0.2s;
+        }
+        .nav-cta:hover { background: var(--teal-dark); transform: translateY(-1px); }
+
+        .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+        .nav-toggle span { display: block; width: 24px; height: 2px; background: var(--white); margin: 6px 0; transition: 0.3s; }
+
+        /* ===== Hero ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: var(--navy-deep);
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -200px; right: -200px;
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(45, 212, 168, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -300px; left: -100px;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero-bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.02);
+        }
+        .hero-bg-circle:nth-child(1) { width: 500px; height: 500px; top: -100px; right: -100px; }
+        .hero-bg-circle:nth-child(2) { width: 350px; height: 350px; bottom: -50px; right: 200px; }
+        .hero-bg-circle:nth-child(3) { width: 250px; height: 250px; top: 200px; left: -80px; }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 140px 0 100px;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(45, 212, 168, 0.1);
+            border: 1px solid rgba(45, 212, 168, 0.25);
+            border-radius: 100px;
+            margin-bottom: 32px;
+        }
+        .hero-badge span {
+            font-family: var(--font-en);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--teal);
+            letter-spacing: 1px;
+        }
+        .hero-badge .dot {
+            width: 6px; height: 6px;
+            background: var(--teal);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .hero h1 {
+            font-size: 60px;
+            font-weight: 900;
+            color: var(--white);
+            line-height: 1.2;
+            margin-bottom: 28px;
+            letter-spacing: -1px;
+        }
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--teal) 0%, #6ee7b7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-sub {
+            font-size: 19px;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.8;
+            max-width: 560px;
+            margin-bottom: 48px;
+        }
+        .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 36px;
+            background: var(--teal);
+            color: var(--navy-deep);
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover { background: var(--teal-dark); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(45,212,168,0.3); }
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 36px;
+            background: transparent;
+            color: var(--white);
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+        .btn-outline:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); }
+
+        /* Hero Stats */
+        .hero-stats {
+            display: flex;
+            gap: 48px;
+            margin-top: 72px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .hero-stat .number {
+            font-family: var(--font-en);
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--teal);
+        }
+        .hero-stat .label {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+        }
+
+        /* ===== About Section ===== */
+        .about {
+            padding: 120px 0;
+            background: var(--white);
+        }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+            align-items: center;
+            max-width: 720px;
+        }
+        .about-visual {
+            background: var(--gray-50);
+            border-radius: 24px;
+            padding: 48px;
+            position: relative;
+        }
+        .about-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 28px 32px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .about-card:last-child { margin-bottom: 0; }
+        .about-card-icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 20px;
+        }
+        .about-card-icon.teal { background: rgba(45,212,168,0.12); color: var(--teal-dark); }
+        .about-card-icon.blue { background: rgba(59,130,246,0.12); color: var(--blue-accent); }
+        .about-card-icon.orange { background: rgba(245,166,35,0.12); color: var(--orange); }
+        .about-card-icon.navy { background: rgba(26,31,58,0.08); color: var(--navy); }
+        .about-card-text h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .about-card-text p {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        /* ===== Service Section ===== */
+        .service {
+            padding: 120px 0;
+            background: var(--navy-deep);
+            position: relative;
+            overflow: hidden;
+        }
+        .service::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(45,212,168,0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, rgba(59,130,246,0.04) 0%, transparent 50%);
+        }
+        .service .section-title { color: var(--white); }
+        .service .section-desc { color: rgba(255,255,255,0.5); }
+
+        .service-highlights {
+            display: flex;
+            gap: 24px;
+            margin-top: 56px;
+            position: relative;
+            z-index: 2;
+        }
+        .service-highlight-card {
+            flex: 1;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 40px 32px;
+            transition: all 0.3s ease;
+        }
+        .service-highlight-card:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(45,212,168,0.3);
+            transform: translateY(-4px);
+        }
+        .service-highlight-icon {
+            width: 56px; height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 24px;
+        }
+        .service-highlight-icon.teal { background: rgba(45,212,168,0.15); }
+        .service-highlight-icon.blue { background: rgba(59,130,246,0.15); }
+        .service-highlight-icon.orange { background: rgba(245,166,35,0.15); }
+        .service-highlight-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+        .service-highlight-card p {
+            font-size: 15px;
+            color: rgba(255,255,255,0.5);
+            line-height: 1.7;
+        }
+
+        /* ===== Methodology Section ===== */
+        .methodology {
+            padding: 120px 0;
+            background: var(--gray-50);
+        }
+        .methodology-header { text-align: center; margin-bottom: 72px; }
+        .methodology-header .section-desc { margin: 0 auto; }
+
+        .phases {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+            position: relative;
+        }
+        .phase-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 40px 32px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+        }
+        .phase-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+        .phase-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+        }
+        .phase-card:nth-child(1)::before { background: var(--blue-accent); }
+        .phase-card:nth-child(2)::before { background: var(--teal); }
+        .phase-card:nth-child(3)::before { background: var(--orange); }
+
+        .phase-number {
+            font-family: var(--font-en);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        .phase-card:nth-child(1) .phase-number { color: var(--blue-accent); }
+        .phase-card:nth-child(2) .phase-number { color: var(--teal); }
+        .phase-card:nth-child(3) .phase-number { color: var(--orange); }
+
+        .phase-week {
+            font-family: var(--font-en);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-400);
+            margin-bottom: 12px;
+        }
+        .phase-card h3 {
+            font-family: var(--font-en);
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: var(--gray-800);
+        }
+        .phase-card .phase-sub {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 24px;
+        }
+        .phase-list { list-style: none; }
+        .phase-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--gray-600);
+            padding: 8px 0;
+        }
+        .phase-list li::before {
+            content: '';
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            margin-top: 7px;
+            flex-shrink: 0;
+        }
+        .phase-card:nth-child(1) .phase-list li::before { background: var(--blue-accent); }
+        .phase-card:nth-child(2) .phase-list li::before { background: var(--teal); }
+        .phase-card:nth-child(3) .phase-list li::before { background: var(--orange); }
+
+        /* Phase connector arrows */
+        .phase-arrow {
+            display: none;
+        }
+
+        /* ===== Service Lineup ===== */
+        .lineup {
+            padding: 120px 0;
+            background: var(--white);
+        }
+        .lineup-header { text-align: center; margin-bottom: 72px; }
+        .lineup-header .section-desc { margin: 0 auto; }
+        .lineup-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .lineup-card {
+            border-radius: 20px;
+            padding: 44px 36px;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .lineup-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+        }
+        .lineup-card:nth-child(1)::before { background: var(--blue-accent); }
+        .lineup-card:nth-child(2)::before { background: var(--teal); }
+        .lineup-card:nth-child(3)::before { background: var(--orange); }
+        .lineup-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+            border-color: transparent;
+        }
+        .lineup-icon {
+            width: 56px; height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 24px;
+        }
+        .lineup-card:nth-child(1) .lineup-icon { background: rgba(59,130,246,0.1); }
+        .lineup-card:nth-child(2) .lineup-icon { background: rgba(45,212,168,0.1); }
+        .lineup-card:nth-child(3) .lineup-icon { background: rgba(245,166,35,0.1); }
+        .lineup-card h3 {
+            font-family: var(--font-en);
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: var(--gray-800);
+        }
+        .lineup-card .lineup-tag {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: block;
+        }
+        .lineup-card:nth-child(1) .lineup-tag { color: var(--blue-accent); }
+        .lineup-card:nth-child(2) .lineup-tag { color: var(--teal-dark); }
+        .lineup-card:nth-child(3) .lineup-tag { color: var(--orange); }
+        .lineup-card p {
+            font-size: 15px;
+            color: var(--gray-500);
+            line-height: 1.8;
+        }
+
+        /* ===== Partners ===== */
+        .partners {
+            padding: 100px 0;
+            background: var(--gray-50);
+        }
+        .partners-header { text-align: center; margin-bottom: 60px; }
+        .partners-header .section-desc { margin: 0 auto; }
+        .partners-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .partner-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 36px 32px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+        }
+        .partner-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
+        .partner-icon {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 22px;
+        }
+        .partner-icon.blue { background: rgba(59,130,246,0.1); }
+        .partner-icon.purple { background: rgba(139,92,246,0.1); }
+        .partner-card h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--gray-800);
+        }
+        .partner-card p {
+            font-size: 14px;
+            color: var(--gray-500);
+            line-height: 1.6;
+        }
+
+        /* ===== Company Info ===== */
+        .company {
+            padding: 100px 0;
+            background: var(--white);
+        }
+        .company-header { text-align: center; margin-bottom: 60px; }
+        .company-header .section-desc { margin: 0 auto; }
+        .company-table {
+            max-width: 720px;
+            margin: 0 auto;
+            background: var(--gray-50);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .company-row {
+            display: flex;
+            align-items: center;
+            padding: 20px 36px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .company-row:last-child { border-bottom: none; }
+        .company-row-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            background: rgba(45,212,168,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-right: 20px;
+            font-size: 16px;
+        }
+        .company-row-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-400);
+            width: 120px;
+            flex-shrink: 0;
+        }
+        .company-row-value {
+            font-size: 15px;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        /* ===== CTA Section ===== */
+        .cta {
+            padding: 120px 0;
+            background: var(--navy-deep);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: -200px; left: 50%;
+            transform: translateX(-50%);
+            width: 800px; height: 400px;
+            background: radial-gradient(ellipse, rgba(45,212,168,0.08) 0%, transparent 70%);
+        }
+        .cta-content { position: relative; z-index: 2; }
+        .cta h2 {
+            font-size: 44px;
+            font-weight: 900;
+            color: var(--white);
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        .cta h2 .gradient-text {
+            background: linear-gradient(135deg, var(--teal) 0%, #6ee7b7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .cta p {
+            font-size: 18px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 48px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .cta .btn-primary { font-size: 17px; padding: 18px 48px; }
+
+        /* ===== Footer ===== */
+        .footer {
+            background: var(--navy);
+            padding: 60px 0 40px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+        }
+        .footer-brand .footer-logo {
+            font-family: var(--font-en);
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+        .footer-brand .footer-logo .highlight { color: var(--teal); }
+        .footer-brand p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.4);
+            line-height: 1.7;
+        }
+        .footer-contact { text-align: right; }
+        .footer-contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 8px;
+            justify-content: flex-end;
+        }
+        .footer-contact-item span { font-size: 16px; }
+        .footer-bottom {
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255,255,255,0.3);
+        }
+
+        /* ===== Scroll Animations ===== */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 1024px) {
+            .hero h1 { font-size: 44px; }
+            .section-title { font-size: 32px; }
+            .about-grid { grid-template-columns: 1fr; }
+            .phases { grid-template-columns: 1fr; gap: 16px; }
+            .lineup-grid { grid-template-columns: 1fr; }
+            .service-highlights { flex-direction: column; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 72px;
+                left: 0; right: 0;
+                background: var(--navy-deep);
+                flex-direction: column;
+                padding: 24px;
+                gap: 20px;
+                border-top: 1px solid rgba(255,255,255,0.06);
+            }
+            .nav-links.active { display: flex; }
+            .nav-toggle { display: block; }
+
+            .hero { min-height: auto; }
+            .hero-content { padding: 120px 0 80px; }
+            .hero h1 { font-size: 36px; }
+            .hero-sub { font-size: 16px; }
+            .hero-stats { flex-direction: column; gap: 24px; }
+            .hero-buttons { flex-direction: column; }
+            .hero-buttons a { text-align: center; justify-content: center; }
+
+            .section-title { font-size: 28px; }
+            .partners-grid { grid-template-columns: 1fr; }
+            .footer-inner { flex-direction: column; gap: 32px; }
+            .footer-contact { text-align: left; }
+            .footer-contact-item { justify-content: flex-start; }
+            .cta h2 { font-size: 32px; }
+
+            .company-row { flex-wrap: wrap; padding: 16px 24px; }
+            .company-row-label { width: 100%; margin-bottom: 4px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">AX Sprint<span class="highlight">.</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#about">회사 소개</a></li>
+                <li><a href="#service">핵심 서비스</a></li>
+                <li><a href="#methodology">방법론</a></li>
+                <li><a href="#lineup">서비스 라인업</a></li>
+                <li><a href="#partners">파트너십</a></li>
+                <li><a href="#contact" class="nav-cta">문의하기</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+        <div class="hero-bg-circle"></div>
+        <div class="hero-bg-circle"></div>
+        <div class="hero-bg-circle"></div>
+        <div class="container hero-content">
+            <div class="hero-badge">
+                <div class="dot"></div>
+                <span>AX SPRINT&trade;</span>
+            </div>
+            <h1>
+                전략에서 실행까지,<br>
+                <span class="gradient-text">AI Transformation</span>의<br>
+                모든 것
+            </h1>
+            <p class="hero-sub">
+                아리송컴퍼니는 9주 안에 실제 작동하는 AI 프로토타입을 제공합니다.<br>
+                아이디어가 비즈니스 가치로 이어지는 전 과정을 책임집니다.
+            </p>
+            <div class="hero-buttons">
+                <a href="#contact" class="btn-primary">
+                    상담 신청하기
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="#methodology" class="btn-outline">
+                    방법론 알아보기
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="number">9<span style="font-size:24px">주</span></div>
+                    <div class="label">프로토타입 완성</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="number">3<span style="font-size:24px">단계</span></div>
+                    <div class="label">통합 프로그램</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="number">End-to-End</div>
+                    <div class="label">전략 ~ 실행 ~ 내재화</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="fade-up">
+                    <div class="section-label">About Us</div>
+                    <h2 class="section-title">AI 혁신의 파트너,<br>아리송컴퍼니</h2>
+                    <p class="section-desc">
+                        아리송컴퍼니(주)는 기업의 AI 전환(AX)을 전략 수립부터 프로토타입 개발,
+                        조직 내재화까지 End-to-End로 지원하는 AI Transformation 전문 기업입니다.
+                    </p>
+                    <p class="section-desc" style="margin-top:16px;">
+                        단순한 보고서가 아닌 실제 작동하는 결과물로,
+                        고객사의 AI 도입 리스크를 최소화하고 비즈니스 가치를 극대화합니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Service -->
+    <section class="service" id="service">
+        <div class="container" style="position:relative;z-index:2;">
+            <div class="fade-up">
+                <div class="section-label">Core Service</div>
+                <h2 class="section-title">AX Sprint&trade;</h2>
+                <p class="section-desc">
+                    기업의 AI 도입 여정 전체를 지원하는 3단계 통합 프로그램입니다.
+                    9주 안에 실제 작동하는 프로토타입을 제공하며, 아이디어가 비즈니스 가치로 이어지는 전 과정을 책임집니다.
+                </p>
+            </div>
+            <div class="service-highlights fade-up" style="transition-delay:0.15s;">
+                <div class="service-highlight-card">
+                    <div class="service-highlight-icon teal">&#128640;</div>
+                    <h3>초고속 검증</h3>
+                    <p>9주 내 AI의 사업적 가치를 빠르게 검증합니다. 긴 프로젝트 없이 핵심 가설을 신속하게 테스트합니다.</p>
+                </div>
+                <div class="service-highlight-card">
+                    <div class="service-highlight-icon blue">&#9989;</div>
+                    <h3>실행 중심</h3>
+                    <p>컨설팅과 실행의 완벽한 통합. 전략 보고서에 머물지 않고 실제 작동하는 프로토타입을 만듭니다.</p>
+                </div>
+                <div class="service-highlight-card">
+                    <div class="service-highlight-icon orange">&#128736;</div>
+                    <h3>변화 관리</h3>
+                    <p>사람 중심의 조직 내재화 지원. 기술 이전과 교육을 통해 조직이 스스로 AI를 활용하도록 돕습니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Methodology -->
+    <section class="methodology" id="methodology">
+        <div class="container">
+            <div class="methodology-header fade-up">
+                <div class="section-label">Methodology</div>
+                <h2 class="section-title">AX Sprint&trade; 방법론</h2>
+                <p class="section-desc">3단계 통합 프로그램으로 9주 안에 AI 프로토타입을 완성합니다.</p>
+            </div>
+            <div class="phases fade-up" style="transition-delay:0.15s;">
+                <div class="phase-card">
+                    <div class="phase-number">PHASE 1</div>
+                    <div class="phase-week">1-2주차</div>
+                    <h3>AX-Ray</h3>
+                    <p class="phase-sub">진단 및 기회 발굴</p>
+                    <ul class="phase-list">
+                        <li>현황 분석 워크숍</li>
+                        <li>데이터 및 시스템 진단</li>
+                        <li>AI Use Case 3~5개 도출</li>
+                        <li>최종 PoC 과제 확정 및 KPI 설정</li>
+                    </ul>
+                </div>
+                <div class="phase-card">
+                    <div class="phase-number">PHASE 2</div>
+                    <div class="phase-week">3-8주차</div>
+                    <h3>AX Prototype</h3>
+                    <p class="phase-sub">설계 및 프로토타이핑</p>
+                    <ul class="phase-list">
+                        <li>애자일 2주 단위 스프린트</li>
+                        <li>데이터 파이프라인 구축</li>
+                        <li>맞춤형 AI 엔진 개발</li>
+                        <li>UI/UX 설계 및 시각화</li>
+                    </ul>
+                </div>
+                <div class="phase-card">
+                    <div class="phase-number">PHASE 3</div>
+                    <div class="phase-week">9주차</div>
+                    <h3>AX Empower</h3>
+                    <p class="phase-sub">내재화 및 확장</p>
+                    <ul class="phase-list">
+                        <li>프로토타입 시연 및 성과 보고</li>
+                        <li>사용자 교육 및 매뉴얼 제공</li>
+                        <li>확장 로드맵 제안</li>
+                        <li>기술 이전 및 역량 강화</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Lineup -->
+    <section class="lineup" id="lineup">
+        <div class="container">
+            <div class="lineup-header fade-up">
+                <div class="section-label">Service Lineup</div>
+                <h2 class="section-title">서비스 라인업</h2>
+                <p class="section-desc">기업의 상황과 목표에 맞는 최적의 서비스를 선택하세요.</p>
+            </div>
+            <div class="lineup-grid fade-up" style="transition-delay:0.15s;">
+                <div class="lineup-card">
+                    <div class="lineup-icon">&#128640;</div>
+                    <h3>AX Sprint&trade; Package</h3>
+                    <span class="lineup-tag">9주 통합 프로그램</span>
+                    <p>Phase 1~3 전체를 포함하는 고정 비용(Fixed Price) 패키지. 예산 예측이 용이하고, 명확한 결과물을 보장받을 수 있어 도입 리스크가 낮습니다.</p>
+                </div>
+                <div class="lineup-card">
+                    <div class="lineup-icon">&#9889;</div>
+                    <h3>AX Sprint&trade; Lite</h3>
+                    <span class="lineup-tag">단기 워크숍 프로그램</span>
+                    <p>실습형 단기 워크숍으로 AI 리터러시 내재화와 업무 자동화 프로토타입을 경험합니다. 전사 AI 연수 계획 수립의 첫 걸음입니다.</p>
+                </div>
+                <div class="lineup-card">
+                    <div class="lineup-icon">&#129309;</div>
+                    <h3>AX Advisory Retainer</h3>
+                    <span class="lineup-tag">월 구독형 자문 서비스</span>
+                    <p>프로젝트 종료 후 기술 지원, 추가 개발, AI 트렌드 자문 등을 월 단위 구독 형태로 제공합니다. 장기적 파트너십을 구축합니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners -->
+    <section class="partners" id="partners">
+        <div class="container">
+            <div class="partners-header fade-up">
+                <div class="section-label">Partnerships</div>
+                <h2 class="section-title">파트너십</h2>
+                <p class="section-desc">전문 분야별 파트너들과 함께 강력한 AX 에코시스템을 구축하고 있습니다.</p>
+            </div>
+            <div class="partners-grid fade-up" style="transition-delay:0.15s;">
+                <div class="partner-card">
+                    <div class="partner-icon blue">&#128161;</div>
+                    <div>
+                        <h4>파트너</h4>
+                        <p>비엑스컨설팅 (BX Consulting)<br>엑스퍼트 (EXPERT)</p>
+                    </div>
+                </div>
+                <div class="partner-card">
+                    <div class="partner-icon purple">&#129309;</div>
+                    <div>
+                        <h4>주요 고객사</h4>
+                        <p>하나증권, 농협은행, 성균관대학교</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- CTA -->
+    <section class="cta" id="contact">
+        <div class="container cta-content fade-up">
+            <h2><span class="gradient-text">AI 혁신</span>, 함께 시작하겠습니다</h2>
+            <p>아리송컴퍼니와 함께 AI Transformation의 첫 걸음을 내딛으세요.</p>
+            <a href="mailto:arisongcompany@gmail.com" class="btn-primary">
+                문의하기
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <div class="footer-logo">AX Sprint<span class="highlight">.</span></div>
+                    <p>아리송컴퍼니 주식회사<br>전략에서 실행까지, AI Transformation의 모든 것</p>
+                </div>
+                <div class="footer-contact">
+                    <div class="footer-contact-item">
+                        <span>&#9993;</span> arisongcompany@gmail.com
+                    </div>
+                    <div class="footer-contact-item">
+                        <span>&#128205;</span> 제주특별자치도 제주시 월랑로8길 1, 402동
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                사업자등록번호 747-86-03599<br>
+                &copy; 2025 아리송컴퍼니(주). All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile nav toggle
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile nav on link click
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Scroll animations
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+        // Nav background on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('nav');
+            if (window.scrollY > 50) {
+                nav.style.background = 'rgba(18, 21, 42, 0.98)';
+            } else {
+                nav.style.background = 'rgba(26, 31, 58, 0.95)';
+            }
+        });
+    </script>
+</body>
+</html>
