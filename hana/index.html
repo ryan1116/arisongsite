@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>하나증권 × Claude 실무 활용 워크숍 — 실습 스크립트</title>
+<style>
+:root{--accent:#252A44;--accent2:#3a4170;--mint:#2DD4A8;--mint2:#1fae89;--bg:#f6f7f9;--card:#ffffff;--ink:#12152A;--muted:#5c6670;--line:#e3e6e8;--code:#f4f5f6;}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-padding-top:70px;}
+body{margin:0;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,-apple-system,sans-serif;
+color:var(--ink);background:var(--bg);line-height:1.7;font-size:16px;-webkit-text-size-adjust:100%;}
+.topbar{position:sticky;top:0;z-index:50;background:var(--accent);color:#fff;padding:11px 20px;
+display:flex;align-items:center;gap:14px;box-shadow:0 1px 6px rgba(0,0,0,.18);}
+.logo{font-family:"Inter","Helvetica Neue",Arial,sans-serif;font-weight:800;font-size:19px;
+letter-spacing:-.02em;color:#fff;white-space:nowrap;text-decoration:none;}
+.logo .dot{color:var(--mint);}
+.topbar .sep{width:1px;height:20px;background:rgba(255,255,255,.28);}
+.topbar b{font-size:14.5px;font-weight:600;color:rgba(255,255,255,.92);}
+.topbar .tag{font-size:12px;background:var(--mint);color:#0c1f1a;font-weight:700;padding:3px 10px;border-radius:20px;}
+.menuBtn{display:none;background:rgba(255,255,255,.18);border:0;color:#fff;font-size:18px;
+border-radius:8px;width:38px;height:34px;cursor:pointer;}
+.wrap{max-width:1180px;margin:0 auto;display:flex;gap:28px;padding:24px 20px 80px;}
+nav.toc{flex:0 0 260px;position:sticky;top:78px;align-self:flex-start;max-height:calc(100vh - 100px);
+overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 14px;font-size:14px;}
+nav.toc .tt{font-weight:700;color:var(--muted);font-size:12px;letter-spacing:.04em;margin:0 0 8px;text-transform:uppercase;}
+nav.toc ul{list-style:none;margin:0;padding:0;}
+nav.toc li{margin:1px 0;}
+nav.toc a{display:block;padding:5px 8px;border-radius:7px;color:var(--ink);text-decoration:none;}
+nav.toc a:hover{background:var(--code);color:var(--accent2);}
+nav.toc ul ul a{padding-left:18px;color:var(--muted);font-size:13px;}
+main{flex:1 1 auto;min-width:0;background:var(--card);border:1px solid var(--line);
+border-radius:14px;padding:34px 40px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.offline{background:#e8faf4;border:1px solid #b6ecdd;color:#0c4a3f;border-radius:10px;
+padding:12px 16px;font-size:14px;margin:0 0 26px;}
+main h1{font-size:27px;line-height:1.35;margin:.2em 0 .5em;border-bottom:3px solid var(--mint);padding-bottom:14px;}
+main h2{font-size:22px;margin:1.8em 0 .6em;padding-top:8px;border-top:1px solid var(--line);padding-top:22px;}
+main h2:first-of-type{border-top:0;padding-top:0;}
+main h3{font-size:18px;margin:1.4em 0 .5em;color:var(--accent2);}
+main h4{font-size:16px;margin:1.2em 0 .4em;}
+main a{color:var(--accent2);}
+blockquote{margin:1em 0;padding:10px 18px;border-left:4px solid var(--mint);background:#f1f9f6;
+color:#2a3b39;border-radius:0 8px 8px 0;}
+blockquote p{margin:.4em 0;}
+table{border-collapse:collapse;width:100%;margin:1.1em 0;font-size:14.5px;display:block;overflow-x:auto;}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top;}
+th{background:var(--code);font-weight:700;}
+tr:nth-child(even) td{background:#fafbfb;}
+code{font-family:"SF Mono","D2Coding",ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;
+background:var(--code);padding:2px 6px;border-radius:5px;}
+.codewrap{position:relative;margin:1em 0;}
+.codewrap pre{background:#1e2530;color:#e8edf2;border-radius:10px;padding:18px 18px;
+overflow-x:auto;margin:0;border:1px solid #2c3543;}
+.codewrap pre code{background:transparent;color:inherit;padding:0;font-size:13.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word;}
+.copybtn{position:absolute;top:10px;right:10px;background:var(--mint);color:#0c1f1a;border:0;
+border-radius:7px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;opacity:.95;}
+.copybtn:hover{background:var(--mint2);opacity:1;}
+.copybtn.done{background:#0c1f1a;color:var(--mint);}
+hr{border:0;border-top:1px solid var(--line);margin:2em 0;}
+ul,ol{padding-left:22px;}
+li{margin:.25em 0;}
+.backtop{position:fixed;right:22px;bottom:22px;background:var(--accent);color:#fff;border:0;
+width:46px;height:46px;border-radius:50%;font-size:20px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2);
+opacity:0;pointer-events:none;transition:opacity .2s;}
+.backtop.show{opacity:.95;pointer-events:auto;}
+@media (max-width:900px){
+ .wrap{flex-direction:column;padding:14px 12px 60px;}
+ nav.toc{position:fixed;left:12px;right:12px;top:60px;z-index:40;display:none;max-height:70vh;}
+ nav.toc.open{display:block;}
+ .menuBtn{display:block;margin-left:auto;}
+ main{padding:22px 18px;border-radius:10px;}
+ main h1{font-size:23px;} main h2{font-size:20px;}
+}
+@media print{
+ .topbar,nav.toc,.copybtn,.backtop,.menuBtn{display:none!important;}
+ .wrap{display:block;padding:0;} main{border:0;box-shadow:none;padding:0;}
+ .codewrap pre{background:#f4f5f6;color:#111;border:1px solid #ccc;}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a class="logo" href="https://axsprints.com/" target="_blank" rel="noopener">AX Sprint<span class="dot">.</span></a>
+  <span class="sep"></span>
+  <b>하나증권 × Claude 실습 스크립트</b>
+  <span class="tag">2회차 워크숍</span>
+  <button class="menuBtn" onclick="document.querySelector('nav.toc').classList.toggle('open')">☰</button>
+</div>
+<div class="wrap">
+  <nav class="toc">
+    <p class="tt">목차</p>
+    <div class="toc">
+<ul>
+<li><a href="#0">0. 이 문서 사용법</a><ul>
+<li><a href="#5">오늘의 학습 목표 (이 5가지를 손에 익히는 것이 목적입니다)</a></li>
+<li><a href="#_1">진행 순서</a></li>
+<li><a href="#_2">표기 약속</a></li>
+</ul>
+</li>
+<li><a href="#1-1-1-about-memd">1-1. 내 입맛에 맞추기 ① — 개인 지침 (about-me.md)</a></li>
+<li><a href="#1-2-2-claudemd">1-2. 내 입맛에 맞추기 ② — 프로젝트 지침 (CLAUDE.md)</a></li>
+<li><a href="#1-3-mcp">1-3. 커넥터(MCP) 이해 &amp; 연결</a><ul>
+<li><a href="#_3">오늘 실습에 쓰는 커넥터</a></li>
+<li><a href="#_4">커넥터별 설명</a></li>
+</ul>
+</li>
+<li><a href="#1-4">1-4. 업무를 스킬로 만들기 — 스킬 문서</a></li>
+<li><a href="#1">예제 1. 데일리 브리핑 (일정 + 메일)</a></li>
+<li><a href="#2">예제 2. 모닝 시황 브리핑</a></li>
+<li><a href="#3">예제 3. 모닝 시황 브리핑 자동화 — 스킬 × 루틴 × 메일</a><ul>
+<li><a href="#1-2">① 스킬 먼저 등록 (예제 2 참고)</a></li>
+<li><a href="#2-1">② 수동으로 1회 실행해 확인</a></li>
+<li><a href="#3_1">③ 루틴으로 등록 (매일 아침 자동)</a></li>
+</ul>
+</li>
+<li><a href="#4-1-pager">예제 4. 기업 1-pager</a><ul>
+<li><a href="#skill-creator">이 업무를 스킬로 만들기 (/skill-creator)</a></li>
+</ul>
+</li>
+<li><a href="#5-1-pager">예제 5. 기업 1-pager — 회사 디자인 반영해보기</a></li>
+<li><a href="#6">예제 6. 산업 · 밸류체인 분석</a></li>
+<li><a href="#7-pptx">예제 7. 산업 분석 → 슬라이드 (PPTX × 하나 디자인)</a></li>
+<li><a href="#8">예제 8. 고객용 쉬운 언어 변환 — 아티팩트 사용</a><ul>
+<li><a href="#_5">✨ 한 단계 업그레이드 — "고객 맞춤 안내문 뷰어" 아티팩트</a></li>
+</ul>
+</li>
+<li><a href="#9">예제 9. 투자광고 유의문구 점검</a><ul>
+<li><a href="#_6">무엇을 언제?</a></li>
+<li><a href="#5-a-6">실습 5-A. 플레이어 매핑 표를 엑셀로 (예제 6 이어서)</a></li>
+<li><a href="#5-b-1-pager-4">실습 5-B. 1-pager를 워드로 (예제 4 이어서)</a></li>
+<li><a href="#5-c-2">실습 5-C. 시황을 웹 대시보드(아티팩트)로 (예제 2 이어서)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+  </nav>
+  <main>
+    <div class="offline">📎 이 파일은 <b>인터넷 연결 없이도</b> 열립니다. 브라우저에 그대로 두고 실습을 따라오세요. 회색 박스의 <b>[복사]</b> 버튼을 누르면 프롬프트가 클립보드에 복사됩니다.</div>
+    <h1 id="claude">하나증권 × Claude 실무 활용 워크숍 — 실습 스크립트</h1>
+<blockquote>
+<p>이 문서는 워크숍에서 함께 따라 하는 실습 문서입니다.
+실습 환경은 <strong>claude.ai 웹</strong>(Pro 플랜) 기준입니다. (데스크톱 앱도 메뉴 명칭만 거의 같습니다.)</p>
+</blockquote>
+<hr />
+<h2 id="0">0. 이 문서 사용법</h2>
+<h3 id="5">오늘의 학습 목표 (이 5가지를 손에 익히는 것이 목적입니다)</h3>
+<ol>
+<li><strong>맞춤 — 나에게 맞추기</strong>: 개인 지침(<code>about-me.md</code>)과 프로젝트 지침(<code>CLAUDE.md</code>)을 만들고 적용한다.</li>
+<li><strong>스킬 — 업무를 잘 정의하고 재사용한다</strong>: 반복 업무를 "스킬 문서"로 만들어 자동으로 불러 쓴다.</li>
+<li><strong>커넥터(MCP) — 외부 데이터에 연결한다</strong>: 시세·공시·뉴스 같은 실시간 데이터를 Claude에 연결해 쓴다.</li>
+<li><strong>프로젝트 — 업무 맞춤 작업공간을 만든다</strong>: 특정 업무에 최적화된 결과물을 반복 생산한다.</li>
+<li><strong>아웃풋 — 다양한 형식으로 뽑는다</strong>: 엑셀·워드·PPTX·웹(아티팩트)으로 결과물을 만든다.</li>
+</ol>
+<h3 id="_1">진행 순서</h3>
+<ul>
+<li><strong>PART 1 (준비, ~30분)</strong>: 위 목표 1~4의 기반을 깐다.</li>
+<li><strong>PART 2~4 (실습 9개)</strong>: 아침 → 오전 → 오후 업무 흐름대로 9개 예제를 직접 해 본다.</li>
+<li><strong>PART 5 (아웃풋)</strong>: 만든 결과를 엑셀·워드·PPTX·아티팩트로 변환한다.</li>
+</ul>
+<h3 id="_2">표기 약속</h3>
+<table>
+<thead>
+<tr>
+<th>표기</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>📋 <strong>복사용 프롬프트</strong></td>
+<td>회색 코드박스 안의 내용을 그대로 복사해 채팅창에 붙여 넣으세요. <code>[ ]</code> 부분만 본인 상황에 맞게 바꿉니다.</td>
+</tr>
+<tr>
+<td>💡 <strong>가이드</strong></td>
+<td>왜 이렇게 하는지, 더 잘하는 팁.</td>
+</tr>
+<tr>
+<td>⚠️ <strong>점검·제약</strong></td>
+<td>컴플라이언스/정확성 관점에서 반드시 지킬 것.</td>
+</tr>
+<tr>
+<td>🔌 <strong>필요 커넥터</strong></td>
+<td>이 실습에 켜야 하는 커넥터.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>공통 원칙 (전 실습 적용):</strong> 투자권유·단정적 전망 금지 · 수치는 출처와 기준일 함께 표기 · 공개 데이터만 사용 · 최종 판단은 사람이 확인.</p>
+</blockquote>
+<hr />
+<h1 id="part-1">PART 1. 실습 준비 (먼저 세팅)</h1>
+<blockquote>
+<p>이 파트의 결과물: ① 내 개인 지침 입력 완료 ② 실습용 프로젝트 1개 생성 ③ 스킬 1개 등록 ④ 핵심 커넥터 연결.</p>
+</blockquote>
+<h2 id="1-1-1-about-memd">1-1. 내 입맛에 맞추기 ① — 개인 지침 (<code>about-me.md</code>)</h2>
+<p><strong>개념.</strong> 개인 지침은 <strong>모든 대화에 자동으로 적용</strong>되는 "<strong>나에 대한 설명서</strong>"입니다. 직무, 전문성 수준, 말투 선호, 금기사항을 한 번 적어두면 매번 설명할 필요가 없습니다. (= 컴퓨터 폴더에 두는 <code>about-me.md</code>를 claude.ai에서는 "개인 환경설정"에 적습니다.)</p>
+<p><strong>추천 작성 방식.</strong> Claude에게 인터뷰를 의뢰하세요. 새 채팅창에 아래와 같이 인터뷰를 의뢰해 봅니다. 성실하게 답할수록 나에게 맞는 개인 지침이 만들어집니다.</p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>클로드를 위한 개인 지침(about-me.md)을 만들어줘. 만들기 전 나에 대해 상세한 인터뷰를 진행하고 개인 지침(about-me.md)을 만들어.
+</code></pre></div>
+<p><strong>실습.</strong> 아래는 인터뷰를 통해 만들어진 개인 지침입니다. 본인에 맞게 고친 뒤 저장하세요.</p>
+<p><strong>위치.</strong> 좌측 하단 <strong>프로필(이니셜) → 설정(Settings) → 일반 → Claude 지침</strong> 텍스트 박스.</p>
+<p>📋 <strong>복사용 — 개인 지침 샘플 (예시)</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code># About Me — Claude 개인 지침
+
+## 기본 정보
+- **직업**: 증권사/IB 금융 전문가
+- **위치**: 서울, 대한민국
+- **언어**: 한국어 사용 (답변은 항상 한국어로)
+
+## 업무 영역
+- **커버리지**: 한국 시장 + 글로벌 시장
+- **자산군**: 주식(Equity), 채권/금리, 파생상품, 멀티애셋 전반
+- **주요 업무**: 시장분석/리서치, 보고서·제안서 작성, 데이터 분석·모델링, 규제/컴플라이언스
+
+## 답변 스타일 지침
+### 톤 &amp; 형식
+- **전문적/기술적** 톤 유지 — 금융 업계 실무자 수준의 용어와 깊이로 답변
+- **서론·인사말 없이 바로 본론**으로 진입
+- 불필요한 반복, 요약, 마무리 멘트 최소화
+### 근거 &amp; 출처
+- 주장·수치에는 **근거와 소스를 항상 명시** (논문, 리서치 리포트, 규정 조항 등)
+- 출처가 불분명한 정보는 그 점을 명확히 표기
+- 시장 데이터는 시점(날짜)을 함께 제시
+### 금융 전문성
+- 금융 용어는 별도 설명 없이 사용 (PER, EV/EBITDA, Duration, VaR 등)
+- 한국 금융 규제(금융위, 금감원, 자본시장법 등)와 글로벌 규제(Basel, SEC 등) 맥락을 이해하고 반영
+- 시장 분석 시 매크로·섹터·종목 레벨을 구분하여 체계적으로 접근
+- 투자 의견이나 추천이 아닌 **분석 프레임워크와 팩트 기반 정보** 제공
+### 보고서 작성 시
+- IB/증권사 리서치 보고서 포맷에 맞는 구조 사용
+- 핵심 요약(Executive Summary) → 본문 → 리스크 요인 순서
+- 데이터 테이블, 밸류에이션 비교표 등 정량적 자료 적극 활용
+### 데이터 분석 시
+- 분석 방법론과 전제 조건(assumptions)을 먼저 제시
+- 수식·모델은 단계별로 전개하되 장황하지 않게
+- 민감도 분석, 시나리오 분석 등 실무적 관점 포함
+
+## 하지 말 것
+- 기초적인 금융 개념 설명 (요청 시 제외)
+- &quot;~에 대해 알아보겠습니다&quot; 같은 불필요한 도입부
+- 투자 권유나 특정 종목 매수/매도 추천
+- 확인되지 않은 수치를 확정적으로 제시
+</code></pre></div>
+<p>💡 <strong>가이드.</strong> 개인 지침은 "Claude가 매번 까먹지 않았으면 하는 것"을 적는 곳입니다. 특정 업무에만 해당하는 규칙(예: "1-pager는 이 순서로")은 여기 말고 <strong>프로젝트 지침</strong>(1-2)에 적습니다. 전역 vs 업무별을 구분하는 게 핵심입니다.</p>
+<h2 id="1-2-2-claudemd">1-2. 내 입맛에 맞추기 ② — 프로젝트 지침 (<code>CLAUDE.md</code>)</h2>
+<p><strong>개념.</strong> 프로젝트는 <strong>특정 업무 전용 작업공간</strong>입니다. 프로젝트마다 ① 전용 지침(custom instructions)과 ② 지식(자료 파일)을 따로 둘 수 있습니다. 개인 지침이 "나"라면, 프로젝트 지침은 "이 업무를 하는 방식"입니다.</p>
+<p><strong>프로젝트 만들기.</strong> 왼쪽 사이드바 <strong>프로젝트(Projects) → 새 프로젝트</strong> → 이름을 <code>데일리 리서치 어시스턴트</code>로 지정 → <strong>프로젝트 지침(Instructions)</strong> 칸에 아래를 붙여 넣기.</p>
+<p>📋 <strong>복사용 — 프로젝트 지침 샘플 1</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code># 프로젝트: 데일리 리서치 어시스턴트
+
+## 이 프로젝트의 목적
+시황 브리핑, 기업/산업 분석, 고객 안내자료 초안을 회사 표준 포맷으로 빠르게 생산한다.
+
+## 공통 출력 규칙
+- 모든 결과물 맨 위에 제목 + 기준일(YYYY-MM-DD) 표기.
+- 숫자가 들어가면 출처와 기준 시점을 괄호로 병기. (예: 2,540.12 (종가, 2026-06-15))
+- 톤: 중립·간결. 투자권유/단정적 전망 금지.
+- 끝에 &quot;본 자료는 정보 제공 목적이며 투자권유가 아닙니다.&quot; 문구 추가.
+
+## 작업 방식
+- 자료가 불충분하면 추정하지 말고 &quot;확인 필요&quot;로 표시.
+- 표로 정리할 수 있으면 표 우선.
+- 내가 &quot;쉽게 풀어줘&quot;라고 하면 전문용어를 일상어로 바꾼다.
+</code></pre></div>
+<p>📋 <strong>복사용 — 프로젝트 지침 샘플 2</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code># Daily Research Assistant — claude.md
+
+## 역할 정의
+WM(개인자산관리) 실무자의 데일리 리서치 어시스턴트. 본인 및 고객 포트폴리오 의사결정을 지원한다. 투자 &quot;추천&quot;이 아닌, 분석 프레임워크와 팩트 기반 정보를 제공하는 것이 목적이다.
+
+## 핵심 기능
+1. **글로벌 시장 요약**: 전일 US/EU/Asia 주요 지수, 금리(UST 2Y/10Y, 한국 국고채), FX(USD/KRW, DXY), 원자재(WTI, Gold) 변동 요약
+2. **오버나잇 뉴스 필터링**: 시장 영향도 기준으로 상위 이벤트만 추출. 노이즈 제거.
+3. **종목/섹터 모니터링**: 사용자가 제공한 관심 종목·섹터에 대한 주요 변동·뉴스 알림
+4. **매크로 캘린더 브리핑**: 당일 예정된 경제지표 발표, 중앙은행 이벤트, 실적 발표 일정 정리
+5. **전략 아이디어 생성/검증**: 이벤트 드리븐 트레이드 아이디어 도출 및 기존 아이디어의 논리 검증
+
+## 분석 프레임워크 (사고 모델)
+### Top-Down 레이어
+- **1차 필터**: 금리 방향성 (미국채 커브, 한국 국고채, 정책금리 경로)
+- **2차 필터**: 크레딧 스프레드 (IG/HY 스프레드, 한국 크레딧 동향)
+- 이 두 변수로 시장 국면(risk-on/off, 사이클 위치)을 판단한다.
+### Bottom-Up 핵심
+- **내재가치 중심**: 기업가치분석(DCF, 멀티플 등)을 통한 내재가치 대비 현재 가격 괴리 평가
+- **실적 모멘텀**: 이익 추정치 변화(earnings revision), 컨센서스 대비 서프라이즈 방향에 집중.
+### 이벤트 드리븐
+- FOMC, CPI, 고용지표 등 주요 매크로 이벤트 발생 시: 결과 요약 → 금리/크레딧 경로 시사점 → 보유 종목 민감도 점검 연결
+### 실적 시즌 프로토콜
+- **사전**: 컨센서스 추정치, 핵심 체크포인트(매출 성장률, 마진, 가이던스 방향), 서프라이즈 시나리오별 주가 반응
+- **사후**: Beat/Miss, 서프라이즈 폭, 가이던스 변경, 밸류에이션 재점검
+### 멍거식 인버전 (Inversion)
+모든 분석에 &quot;뒤집어 보기&quot;를 적용한다:
+- 투자 아이디어를 제시할 때 → **&quot;이 아이디어가 틀리려면 어떤 조건이 필요한가?&quot;**를 반드시 함께 제시
+- 긍정/부정 뷰 각각의 반대 시나리오 촉발 조건과 확률 검토
+- 단순 리스크 나열이 아니라, **논제를 뒤집었을 때의 논리 구조**를 보여준다
+
+## 리스크 관리 규칙 (하드 룰)
+| 규칙 | 기준 |
+|---|---|
+| 현금 비중 | 높게 유지 (보수적 운용 기조) |
+| 단일 종목 비중 | 포트폴리오 대비 10% 상한 |
+| 손절 기준 | 매입가 대비 -20% 도달 시 손절 |
+
+## 커버리지 범위
+- **지역**: 한국 + 글로벌 (US, EU, Asia 전반)
+- **자산군**: 주식, 채권/금리, 파생상품, 멀티애셋
+- **섹터**: 제한 없음. 사용자가 관심 종목/섹터를 제공하면 해당 유니버스 중심.
+
+## 출력 규칙
+- **간결하게**. 핵심만. 서론·인사말·마무리 멘트 없이 바로 본론.
+- 시장 데이터에는 반드시 시점(날짜, 시간) 명기. 출처 불분명한 수치는 그 점을 명시.
+- **객관적·중립적** 톤. 과도한 낙관/비관 금지. 확신도 낮은 판단은 불확실성을 명시.
+- 금융 전문 용어는 설명 없이 사용 (PER, EV/EBITDA, Duration, OAS, VaR 등).
+
+## 금지 사항
+- 투자 권유, 특정 종목 매수/매도 추천
+- 확인되지 않은 수치를 확정적으로 제시
+- 과도한 낙관/비관 편향
+- 기초적 금융 개념 설명 (요청 시 제외)
+- &quot;~에 대해 알아보겠습니다&quot; 등 불필요한 도입부 / 불필요한 반복·요약
+- 단일 시나리오만 제시하고 인버전 관점 생략
+</code></pre></div>
+<p>💡 <strong>가이드.</strong> 같은 프로젝트 안에서 대화를 시작하면 이 지침이 매번 자동 적용됩니다.</p>
+<p>⚠️ <strong>점검.</strong> 회사 자료(미공개 정보 등)를 프로젝트 지식으로 올릴 때는 사내 보안정책을 먼저 확인하세요.</p>
+<h2 id="1-3-mcp">1-3. 커넥터(MCP) 이해 &amp; 연결</h2>
+<p><strong>MCP가 뭔가요? (1분 설명)</strong> MCP(Model Context Protocol)는 <strong>Claude를 외부 데이터·도구에 연결하는 표준 어댑터</strong>입니다. 비유하자면 USB-C 같은 공용 규격이라, 한 번 규격을 맞춰 두면 시세 서비스든, 공시 DB든, 사내 시스템이든 같은 방식으로 Claude에 꽂아 쓸 수 있습니다. 커넥터를 켜면 Claude가 "지금" 데이터를 직접 조회해 답합니다(=환각 줄고, 최신성 확보).</p>
+<p><strong>두 종류.</strong>
+- <strong>내장 커넥터</strong>: 웹 검색 등 기본 제공.
+- <strong>커스텀 커넥터(원격 MCP)</strong>: 시세·공시 같은 외부 서비스를 URL로 추가.</p>
+<h3 id="_3">오늘 실습에 쓰는 커넥터</h3>
+<blockquote>
+<p><strong>접속 환경 안내</strong>
+오늘은 <strong>내장 커넥터</strong>와 <strong>웹(claude.ai) 전용 커넥터</strong>를 사용합니다. 이 커넥터들은 <strong>claude.ai 웹에서만</strong> 동작하며, <strong>현재 환경에서는 데스크톱 앱으로는 사용할 수 없습니다.</strong> 반드시 브라우저(claude.ai)에서 실습하세요.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>커넥터</th>
+<th>역할 · 제공 데이터</th>
+<th>로그인 · 준비</th>
+<th>주로 쓰는 예제</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>FMP</strong> (Financial Modeling Prep)</td>
+<td>지수, 개별 기업 주가, 펀더멘털(재무) 데이터, SEC 공시 등 시장·기업 데이터</td>
+<td><strong>구글 로그인 필요</strong> · site.financialmodelingprep.com</td>
+<td>2, 3, 4, 6</td>
+</tr>
+<tr>
+<td><strong>Gmail</strong></td>
+<td>이메일 조회·작성 — 자료 수신, 결과물 메일 발송</td>
+<td>구글 계정 연결</td>
+<td>1, 3</td>
+</tr>
+<tr>
+<td><strong>Google Drive</strong></td>
+<td>파일 불러오기·저장 — 원자료 읽기, 산출물 보관</td>
+<td>구글 계정 연결</td>
+<td>(선택) 입출력</td>
+</tr>
+<tr>
+<td><strong>Google Calendar</strong></td>
+<td>일정 조회·등록 — 회의·세미나 일정 확인 및 잡기</td>
+<td>구글 계정 연결</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>Replit</strong></td>
+<td>웹사이트 만들기·배포 — 아티팩트/대시보드를 실제 웹페이지로</td>
+<td>replit.com 계정</td>
+<td>8(뷰어) · 대시보드 배포</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_4">커넥터별 설명</h3>
+<p><strong>FMP (Financial Modeling Prep)</strong> — 오늘 실습의 핵심 데이터 소스입니다. 지수·환율·개별 종목 주가 같은 시세, 매출·영업이익 등 펀더멘털 재무, SEC 공시까지 한 곳에서 조회합니다. <strong>글로벌·미국 시장 중심</strong>이라는 점을 감안하세요(뉴스는 상위 플랜 전용이라 뉴스·정성정보는 웹 검색으로 보완). <strong>구글 계정으로 로그인</strong>해야 사용할 수 있습니다.</p>
+<p><strong>Gmail</strong> — 받은 자료를 가져와 정리하거나, 작성한 결과물을 메일로 발송할 때 씁니다(예: 데일리 브리핑 자동 발송).</p>
+<p><strong>Google Drive</strong> — 분석할 원자료를 불러오고, 완성한 산출물을 저장·공유하는 용도(선택).</p>
+<p><strong>Google Calendar</strong> — 오늘 일정을 확인하고 후속 미팅을 잡을 때 씁니다(데일리 브리핑).</p>
+<p><strong>Replit</strong> — 만든 웹 결과물(시황 대시보드, 고객 안내문 뷰어 등)을 <strong>실제 접속 가능한 웹사이트로 배포</strong>할 때 사용합니다.</p>
+<p><strong>연결 방법.</strong>
+- <strong>추가</strong>: 설정 → <strong>Connectors(커넥터) → 추가 "+" → 인증(구글 인증)</strong>
+- <strong>대화에서 켜기</strong>: 채팅창 왼쪽 아래 <strong>"+" 버튼 → Connectors</strong> 에서 이번 대화에 쓸 커넥터를 토글로 켭니다.</p>
+<p>⚠️ <strong>점검·제약.</strong> 커넥터는 <strong>공개 데이터 조회용</strong>으로만 사용. 미공개·내부정보 연결은 사내 정책 확인 필수.</p>
+<h2 id="1-4">1-4. 업무를 스킬로 만들기 — 스킬 문서</h2>
+<p><strong>개념.</strong> 스킬은 <strong>"이 업무는 이렇게 해"를 적어둔 문서</strong>입니다. 한 번 등록해두면, 관련된 요청을 할 때 Claude가 <strong>알아서 그 스킬을 불러와</strong> 정해진 절차·포맷대로 일합니다. 프로젝트 지침이 "이 작업공간 전반"이라면, 스킬은 "이 특정 업무 한 가지"를 더 정밀하게 규정합니다.</p>
+<p><strong>좋은 업무 정의 = 6요소.</strong> 오늘 9개 예제가 모두 이 틀로 쓰여 있습니다. 스킬을 쓸 때도 이 틀을 그대로 따르세요.</p>
+<ol>
+<li><strong>목적</strong> — 무엇을 위한 작업인가</li>
+<li><strong>사용 도구</strong> — 어떤 커넥터/입력이 필요한가</li>
+<li><strong>입력</strong> — 무엇을 받는가</li>
+<li><strong>처리 지침</strong> — 단계별로 어떻게 처리하는가</li>
+<li><strong>출력 포맷</strong> — 결과를 어떤 모양으로 내는가</li>
+<li><strong>점검·제약</strong> — 지켜야 할 규칙</li>
+</ol>
+<p><strong>스킬 파일 구조.</strong> 스킬은 <code>SKILL.md</code> 파일 하나면 됩니다. 맨 위 메타데이터(이름·설명) + 본문(지침).</p>
+<blockquote>
+<p>💡 <strong>아래 과제로 스킬을 단련해 보세요.</strong>
+https://universal-resonance-36c.notion.site/Claude-2-37c84764326880fd9171fae1ce63102d?source=copy_link</p>
+</blockquote>
+<hr />
+<h1 id="part-2">PART 2. 🌅 아침 루틴</h1>
+<h2 id="1">예제 1. 데일리 브리핑 (일정 + 메일)</h2>
+<p><strong>한 줄 목적.</strong> 매일 아침, 오늘 일정과 밤사이 쌓인 이메일을 한 장으로 정리해 하루를 빠르게 시작한다.
+<strong>이 예제로 배우는 것.</strong> 커넥터 두 개(Gmail + 캘린더)를 조합해 <strong>내 업무 데이터</strong>를 불러오고 정해진 형식으로 요약하기. (학습목표 3: 핵심 커넥터)</p>
+<p>🔌 <strong>필요 커넥터.</strong> Gmail, Google Calendar</p>
+<p><strong>실습 단계.</strong>
+1. 프로젝트 새 대화 → 채팅창 "+" → Connectors에서 Gmail·Google Calendar를 켠다.
+2. 아래 프롬프트를 붙여 넣는다.</p>
+<p>📋 <strong>복사용 프롬프트</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>내가 하루를 빠르게 시작할 수 있도록 &quot;데일리 브리핑&quot;을 만들어줘.
+Google 캘린더와 Gmail을 확인해서 아래 항목을 정리해줘.
+
+1. 오늘 일정 — 다가오는 미팅·이벤트를 시간순으로. 참석자와 사전 준비가 필요한 건 함께 표기.
+2. 중요 이메일 — 주목해야 할 미확인 메일을 긴급도별로 묶어 요약.
+3. 회신 필요 메일 — 내 답장이 필요한 메일을 따로 플래그.
+4. 액션아이템 — 최근 메일·일정에서 나온 할 일·후속조치를 목록으로.
+
+[형식 규칙]
+- 간결하고 스캔하기 쉽게. 각 항목은 짧은 불릿으로.
+- 내용이 없는 섹션은 &quot;없음&quot;이라 쓰지 말고 생략.
+- 시간은 한국 시간(KST) 기준으로 표기.
+</code></pre></div>
+<p><strong>출력 포맷.</strong> 일정 / 중요 이메일(긴급도별) / 회신 필요 / 액션아이템 — 내용이 있는 섹션만, 불릿 위주의 1장.</p>
+<p>⚠️ <strong>점검·제약.</strong> 메일·일정엔 민감정보가 포함될 수 있으니 <strong>회사 계정 연결·외부 처리에 대한 사내 정책을 먼저 확인</strong>하세요. 실습은 개인 Gmail로 자기 자신에게 시연하는 것을 권장합니다.</p>
+<h2 id="2">예제 2. 모닝 시황 브리핑</h2>
+<p><strong>한 줄 목적.</strong> 매일 아침 국내외 시장을 회사 표준 1장으로 요약한다.
+<strong>이 예제로 배우는 것.</strong> 커넥터(FMP + 웹 검색)로 실시간 데이터를 끌어와 정해진 포맷으로 정리하기 + <strong>반복 업무를 스킬로 만들기</strong>.</p>
+<p>🔌 <strong>필요 커넥터.</strong> FMP, 웹 검색(내장)</p>
+<blockquote>
+<p>진행 위치: <strong><code>데일리 리서치 어시스턴트</code> 프로젝트 안</strong>에서 새 대화로 시작하세요.</p>
+</blockquote>
+<p><strong>실습 단계.</strong>
+1. 프로젝트 안에서 새 대화를 연다.
+2. 채팅창 "+" → Connectors에서 FMP·웹 검색을 켠다.
+3. 아래 스킬을 등록한 뒤 "모닝 시황 브리핑 작성해"라고 요청한다.</p>
+<p>📋 <strong>복사용 — <code>SKILL.md</code> 예시 (모닝 시황 브리핑 스킬, 기본형)</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>---
+name: morning-market-brief
+description: 매일 아침 국내외 시장 상황을 회사 표준 1장 포맷으로 요약. 사용자가 &quot;모닝 브리핑&quot;, &quot;시황 정리&quot;, &quot;아침 시황&quot;을 요청할 때 사용.
+---
+# 모닝 시황 브리핑
+## 목적
+당일 아침, 국내외 시장을 1장으로 요약한다.
+## 처리 지침
+1. 주요 지수·환율·금리의 전일 대비 등락을 수집한다.
+2. 간밤 핵심 뉴스 3~5건을 선별한다.
+3. 시장에 대한 중립적 한 줄 코멘트를 단다.
+## 출력 포맷
+- 제목 + 기준일
+- ① 시장 스냅샷 (표: 지표 / 종가 / 등락 / 등락률)
+- ② 핵심 뉴스 (불릿 3~5)
+- ③ 오늘의 관전 포인트 (불릿 2~3)
+## 점검·제약
+- 투자권유·단정적 전망 금지.
+- 모든 수치에 출처·기준일 표기.
+- 공개 데이터만 사용.
+</code></pre></div>
+<p><strong>등록 방법 (claude.ai 웹).</strong>
+1. 설정 → <strong>사용자 지정(Customize)</strong> 으로 들어간다.
+2. <strong>스킬(Skills)</strong> 메뉴로 이동한다.
+3. 상단 <strong>"+" 추가</strong> 버튼 → <strong>스킬 만들기</strong> → <strong>스킬 지침 작성</strong>을 선택한다.
+4. <strong>스킬 이름 → 설명 → 지침</strong> 순서로 위 내용대로 입력한다.</p>
+<p>💡 <strong>가이드.</strong> 오늘은 "스킬이 무엇이고 어떻게 만드는지"를 이해하는 게 목표입니다. 시간이 빠듯하면 등록까지 안 가도 됩니다 — 같은 내용을 프로젝트 지침이나 프롬프트에 넣어도 동작은 비슷합니다. 다만 <strong>자주 반복하는 업무일수록 스킬로 만들어 두는 ROI가 큽니다.</strong></p>
+<hr />
+<p>📋 <strong>복사용 — <code>SKILL.md</code> 예시 (모닝 시황 브리핑 스킬, FMP 최적화 버전)</strong></p>
+<p><strong>FMP API가 무료 티어이므로 사용량 제한이 있습니다. 이를 반영한 구조입니다.</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>---
+name: morning-market-brief
+description: 매일 아침 국내외 시장 상황을 회사 표준 1장 포맷으로 요약. 사용자가 &quot;모닝 브리핑&quot;, &quot;시황 정리&quot;, &quot;아침 시황&quot;을 요청할 때 사용.
+---
+# 모닝 시황 브리핑
+## 목적
+당일 아침, 국내외 시장을 1장으로 요약한다.
+## 처리 지침
+1. 주요 지수·환율·금리의 전일 대비 등락을 수집한다.
+2. 간밤 핵심 뉴스 3~5건을 선별한다.
+3. 시장에 대한 중립적 한 줄 코멘트를 단다.
+## 데이터 소싱 전략
+
+### FMP API (시장 스냅샷 전용)
+- **플랜**: Basic (250 calls/day). 브리핑 1회당 **15콜 이내**로 제한한다.
+- **용도**: 정확한 수치가 필요한 시장 스냅샷 + 경제 지표 조회에만 사용한다.
+- **뉴스·텍스트 정보에는 사용하지 않는다**
+
+#### 호출 목록 (약 12콜)
+| # | 도구 | 엔드포인트 | 파라미터 | 비고 |
+|---|------|-----------|---------|------|
+| 1 | FMP:indexes | index-quote | ^GSPC | S&amp;P 500 |
+| 2 | FMP:indexes | index-quote | ^DJI | Dow Jones |
+| 3 | FMP:indexes | index-quote | ^IXIC | NASDAQ |
+| 4 | FMP:indexes | index-quote | ^VIX | 변동성 |
+| 5 | FMP:forex | forex-quote-short | EURUSD | |
+| 6 | FMP:forex | forex-quote-short | USDJPY | |
+| 7 | FMP:economics | treasury-rates | (없음) | 2Y/10Y/30Y 추출 |
+| 8 | FMP:commodity | commodities-quote | GCUSD | Gold |
+| 9 | FMP:commodity | commodities-quote | BZUSD | Brent |
+| 10 | FMP:crypto | cryptocurrency-quote | BTCUSD | Bitcoin |
+| 11 | FMP:economics | economics-calendar | (없음) | 당일 경제 이벤트 |
+
+#### Basic 플랜에서 차단되는 항목 (사용 금지)
+- batch-quote, full-forex-quotes → Premium/Ultimate 전용
+- USDKRW, CLUSD, WTIUSD 심볼 → 상위 플랜 전용
+- FMP:news 전체 → Starter+ 전용
+
+### 웹 검색 (뉴스·정성 정보)
+- 핵심 뉴스, KOSPI/원화 시세, 시장 코멘터리는 web_search로 수집한다.
+- 검색 키워드 예시: stock market news today {날짜}, KOSPI today, FOMC {날짜}
+
+### 호출 순서
+1. FMP 도구를 먼저 병렬로 호출하여 수치 데이터를 확보한다.
+2. web_search로 뉴스·KOSPI·USD/KRW 등 FMP에서 못 가져온 데이터를 보완한다.
+3. 수집 완료 후 출력 포맷에 맞춰 정리한다.
+## 출력 포맷
+- 제목 + 기준일
+- ① 시장 스냅샷 (표: 지표 / 종가 / 등락 / 등락률)
+  - 미국 지수: S&amp;P 500, DJIA, NASDAQ, VIX
+  - 한국: KOSPI (web_search)
+  - 환율: EUR/USD, USD/JPY, USD/KRW (web_search)
+  - 금리: US 2Y, 10Y, 30Y (전일 대비 bp 변동)
+  - 원자재: Gold, Brent
+  - 암호화폐: BTC
+- ② 핵심 뉴스 (3~5건, 카테고리 태그 포함)
+- ③ 오늘의 관전 포인트 (2~3건)
+- 출처 표기 (하단)
+## 점검·제약
+- 투자권유·단정적 전망 금지.
+- 모든 수치에 출처·기준일 표기.
+- 공개 데이터만 사용.
+</code></pre></div>
+<hr />
+<h2 id="3">예제 3. 모닝 시황 브리핑 자동화 — 스킬 × 루틴 × 메일</h2>
+<p><strong>한 줄 목적.</strong> 예제 2의 모닝 시황 브리핑을, 매일 아침 <strong>자동으로 생성해 내 받은편지함으로</strong> 받는다.
+<strong>이 예제로 배우는 것.</strong> 세 가지를 하나로 묶기 — ① 잘 만든 <strong>스킬</strong>(<code>morning-market-brief</code>)을 ② <strong>루틴</strong>(클라우드 예약 실행)으로 돌리고 ③ 결과를 <strong>Gmail로 전달</strong>. "AI에게 시키기"에서 "AI가 매일 알아서 일하기"로 넘어가는 전환점.</p>
+<p>🔌 <strong>필요 커넥터.</strong> FMP, 웹 검색(내장), Gmail(결과 전달).</p>
+<h3 id="1-2">① 스킬 먼저 등록 (예제 2 참고)</h3>
+<p>예제 2에서 <strong>등록한 <code>morning-market-brief</code> 스킬을 그대로 사용</strong>합니다. 스킬 안에 데이터 소싱 전략(FMP 호출 목록·플랜 제약)·출력 포맷·점검 규칙이 들어 있으므로, <strong>루틴에서는 짧게 호출만</strong> 하면 됩니다. (스킬에 절차를 담아두는 것의 진가가 여기서 드러납니다.)</p>
+<h3 id="2-1">② 수동으로 1회 실행해 확인</h3>
+<p>새 대화에서 FMP·웹검색을 켜고 아래를 실행해, 브리핑 모양과 메일 발송이 정상인지 확인합니다.</p>
+<p>📋 <strong>복사용 프롬프트 (수동 실행 / 루틴 공용)</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>&quot;모닝 시황 브리핑&quot;을 작성해줘. (morning-market-brief 스킬 적용)
+
+[데이터]
+- FMP로 시장 스냅샷 수치를 먼저 병렬 수집 (1회 15콜 이내)
+- 웹 검색으로 핵심 뉴스, KOSPI, USD/KRW를 보완
+- 기준일·시점을 명시
+
+[전달]
+- 완성한 브리핑을 내 Gmail로 발송해줘.
+  · 제목: 모닝 시황 브리핑 (YYYY-MM-DD)
+  · 본문: 스킬의 출력 포맷 그대로 (시장 스냅샷 표 / 핵심 뉴스 / 관전 포인트 / 출처)
+
+투자권유·단정 전망 금지, 공개 데이터만, 모든 수치에 출처·기준일.
+</code></pre></div>
+<h3 id="3_1">③ 루틴으로 등록 (매일 아침 자동)</h3>
+<p>같은 프롬프트에 트리거를 걸어 루틴으로 만듭니다. (생성: <code>claude.ai/code/routines</code> 또는 채팅에서 <code>/schedule</code>)</p>
+<ul>
+<li><strong>트리거:</strong> <strong>평일(월~금) 아침 08:00 (KST)</strong> — 미국 증시 마감(새벽 KST) 이후라 간밤 美 세션이 모두 반영된 시점.</li>
+<li>루틴은 <strong>Anthropic 클라우드에서 실행</strong> → 노트북이 꺼져 있어도 정해진 시각에 돌고, 결과가 메일로 도착합니다. (데스크톱 앱 불필요 — 웹 전용 환경에 적합)</li>
+</ul>
+<p><strong>결과 받는 법.</strong> (1) <code>claude.ai/code</code>의 루틴 실행 기록에서 열어보기, 또는 (2) <strong>위 [전달] 단계로 내 Gmail에 자동 발송</strong> — 매일 아침 받은편지함에 도착하는 (2)가 가장 확실한 방식입니다.</p>
+<p>💡 <strong>가이드.</strong>
+- <strong>콜 예산.</strong> FMP Basic 250콜/일, 브리핑 1회 ≈ 12~15콜이라 하루 1회 자동 실행은 충분히 여유. 빈도를 올리면 소진을 염두에.
+- <strong>묶어서 받기.</strong> 예제 1(데일리 브리핑)도 같은 시각 루틴으로 걸면, 아침에 <strong>개인 일정·메일 브리핑 + 시장 브리핑</strong>이 함께 도착합니다.
+- <strong>튜닝.</strong> 메일이 길면 "핵심 뉴스 3건으로", 자산을 더 원하면 스킬의 호출 목록에 심볼을 추가 → 이후 모든 자동 실행에 반영.</p>
+<p>⚠️ <strong>점검·제약.</strong> 투자권유·단정 전망 금지 · 모든 수치 출처·기준일 · 공개 데이터만. 회사 메일로의 자동 발송은 사내 정책 확인 — 실습은 <strong>개인 Gmail로 자기 자신에게</strong> 보내는 것으로 권장.</p>
+<hr />
+<h1 id="part-3">PART 3. ☀️ 오전 — 기업 / 산업 분석</h1>
+<h2 id="4-1-pager">예제 4. 기업 1-pager</h2>
+<p><strong>한 줄 목적.</strong> 상장사 1곳을 입력하면 개요·재무·공시·이슈를 1장으로.
+<strong>이 예제로 배우는 것.</strong> 여러 데이터원(FMP 시세·재무 + 웹 뉴스)을 한 번에 조합해 종합 리포트 만들기.</p>
+<p>🔌 <strong>필요 커넥터.</strong> FMP(기업 개요·재무·시세·SEC 공시), 웹/뉴스.</p>
+<p><strong>실습 단계.</strong> 프로젝트 새 대화 → FMP·웹 검색 켜기 → 프롬프트의 <code>[기업명]</code>만 교체.</p>
+<blockquote>
+<p>💡 국내 주식의 경우 DART MCP를 불러와야 하나, 데스크톱 앱에서만 구성이 가능합니다. 오늘 웹 환경에서는 <strong>해외(미국) 종목</strong>으로 실습하세요(예: 마이크론, 엔비디아, 애플).</p>
+</blockquote>
+<p>📋 <strong>복사용 프롬프트</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>[기업명: 마이크론(Micron, MU)]에 대한 &quot;기업 1-pager&quot;를 작성해줘.
+
+[처리]
+1) 기업 개요·주요 사업 (FMP company profile)
+2) 핵심 재무: 매출·영업이익·성장률·주요 밸류에이션(PER/PBR 등)
+   - FMP의 손익계산서·주요 지표(key metrics)·비율(ratios)에서 — 기준일 표기
+3) 최근 공시 3~5건 요약 (FMP의 SEC 공시 목록)
+4) 최근 이슈·뉴스 (웹 검색, 출처 포함)
+5) 리스크·관전 포인트
+
+[출력 포맷]
+- 회사명 + 기준일
+- 개요
+- 재무 스냅샷 (표: 지표 / 값 / YoY)
+- 최근 공시
+- 이슈
+- 리스크·관전 포인트
+
+공개데이터만, 수치엔 출처·기준일, 투자의견 단정 금지.
+</code></pre></div>
+<p><strong>출력 포맷.</strong> 회사명·기준일 → 개요 / 재무 스냅샷 표 / 최근 공시 / 이슈 / 리스크.</p>
+<p>⚠️ <strong>점검·제약.</strong> 공개데이터만 · 출처/기준일 표기 · 투자의견 단정 금지. (FMP Basic 250콜/일 — 뉴스는 웹 검색으로)</p>
+<p><strong>커넥터 없이 하는 법.</strong> 사업보고서/시세표를 붙여 넣고 동일 포맷 요청.</p>
+<h3 id="skill-creator">이 업무를 스킬로 만들기 (<code>/skill-creator</code>)</h3>
+<p>이 내용으로 스킬을 만들어 보겠습니다. <code>/skill-creator</code> 스킬을 사용해서 대화하듯 스킬을 만듭니다. 아래는 완성된 스킬 문서 예시입니다 — FMP 실패 시 웹검색 자동 대체·멍거식 인버전까지 담겨 있어, 등록 후 "마이크론 1-pager"만 쳐도 동일 품질로 나옵니다.</p>
+<p>📋 <strong>복사용 — <code>company-one-pager</code> 스킬 문서 (SKILL.md)</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>---
+name: company-one-pager
+description: &quot;상장 기업의 1-pager(기업 개요·재무·공시·이슈·리스크)를 작성한다. 사용자가 '1-pager', '기업 요약', '종목 분석', '기업 프로필', '원페이저', 'company overview' 등을 요청하거나, 특정 종목에 대해 전반적 분석을 요청할 때 사용. 단일 종목 실적 분석이나 밸류에이션만 따로 요청하는 경우에도, 전체 그림을 함께 제공하는 것이 유용하다고 판단되면 이 스킬을 트리거한다.&quot;
+---
+
+# 기업 1-Pager
+상장 기업 1종에 대해 개요·재무·공시·이슈·리스크를 1장으로 정리한다.
+
+## 입력
+사용자 프롬프트에서 **기업명 또는 티커**(예: &quot;마이크론&quot;, &quot;MU&quot;, &quot;삼성전자&quot;)를 추출한다.
+- 티커가 명시되지 않은 경우, 기업명으로 FMP search-name 또는 search-symbol을 호출해 티커를 확정한다.
+- 한국 종목은 KRX 티커(6자리 숫자), 미국 종목은 NYSE/NASDAQ 티커를 사용한다.
+
+## 데이터 수집 — 5단계 병렬 처리
+가능한 한 여러 데이터 소스를 **병렬로** 호출해 응답 속도를 높인다.
+
+### Step 1: 기업 프로필 (FMP)
+```
+FMP:company → endpoint: profile-symbol, symbol: {TICKER}
+```
+추출 항목: 기업명, 섹터/산업, 본사, CEO, 임직원 수, 시가총액, beta, 52주 레인지, IPO일, 사업 설명.
+
+### Step 2: 주가·밸류에이션 (FMP → 웹 검색 fallback)
+먼저 FMP quote 엔드포인트를 시도한다:
+```
+FMP:quote → endpoint: quote, symbol: {TICKER}
+```
+FMP 플랜 제한으로 실패 시, **즉시 웹 검색으로 전환**한다:
+```
+web_search: &quot;{TICKER} stock price PE ratio PBR market cap {현재연도}&quot;
+```
+필수 밸류에이션 지표: 현재가, 시가총액, PER(TTM/Forward), PBR, 배당수익률, YTD 수익률.
+
+### Step 3: 재무 실적 (웹 검색 + SEC Filing)
+FMP에 손익계산서·비율 엔드포인트가 플랜 제한일 수 있으므로, SEC 8-K/10-Q 원문과 웹 검색을 병행한다:
+```
+web_search: &quot;{기업명} {TICKER} revenue earnings financials {최근 회계연도}&quot;
+web_search: &quot;{기업명} annual revenue operating income {직전 2개 회계연도}&quot;
+```
+수집 항목 (최소 직전 2개 분기 + 직전 2개 연도): 매출, 영업이익, OPM, 순이익, EPS(GAAP/Non-GAAP), 가능하면 OCF, FCF, CapEx, ROE, ROIC. 모든 수치에 **출처와 기준 회계기간**을 명기한다.
+
+### Step 4: 최근 공시 (FMP → 웹 검색 fallback)
+```
+FMP:secFilings → endpoint: search-by-symbol, symbol: {TICKER}, limit: 5
+```
+FMP 실패 시: web_search: &quot;{기업명} {TICKER} SEC filings {현재연도}&quot;
+한국 종목: web_search: &quot;{기업명} 공시 DART {현재연도}&quot;
+최근 3~5건의 주요 공시를 일자·유형·핵심 내용으로 요약. 8-K·10-Q/10-K를 내부자 거래(Form 3/4)보다 우선한다.
+
+### Step 5: 최근 이슈·뉴스 (웹 검색)
+```
+web_search: &quot;{기업명} {TICKER} stock news {현재 월 연도}&quot;
+web_search: &quot;{기업명} {핵심 사업 키워드} {현재연도}&quot;
+```
+선별 기준: 실적·가이던스, 제품/기술 이정표, 대규모 CapEx/M&amp;A/구조조정, 업종 테마, 경영진/지배구조. 노이즈(단순 주가 예측·루머) 제외.
+
+## 출력 포맷
+아래 구조를 **그대로** 따른다. 섹션 순서를 바꾸지 않는다.
+```
+## {기업명} ({거래소}:{티커}) — 기업 1-Pager
+**기준일: {YYYY년 MM월 DD일} | 회계연도: {결산월} 결산 | 출처: {주요 출처}**
+
+### 1. 기업 개요
+{사업 설명 2~3문장 + 표: 본사/CEO/임직원/세그먼트/주요 제품/시가총액/Beta}
+
+### 2. 재무 스냅샷
+분기 실적 표 / 연간 실적 표 / 밸류에이션 표 / 가이던스
+
+### 3. 최근 공시
+| 일자 | 유형 | 내용 |
+
+### 4. 이슈
+{이슈별 ① ② ③ 넘버링, 출처 표기}
+
+### 5. 리스크·관전 포인트
+- 리스크 요인 3~5개
+- 관전 포인트 (멍거식 인버전): &quot;이 기업의 현재 내러티브가 틀리려면?&quot; 강세론/약세론 양방향
+- 단기 체크포인트 (1~3개월)
+```
+
+## 분석 원칙
+- **Top-Down 1차 필터**: 금리 방향성·크레딧 스프레드로 시장 국면을 판단하고, 기업의 현 위치를 언급한다.
+- **Bottom-Up 핵심**: 내재가치 대비 현재가 괴리, 실적 모멘텀(earnings revision, 서프라이즈 이력).
+- **멍거식 인버전**: &quot;현재 투자 내러티브가 틀리려면 어떤 조건이 필요한가&quot;를 강세론/약세론 양방향으로 제시.
+
+## 제약·금지
+- 투자 권유·매수/매도 추천 금지. 분석 프레임워크와 팩트만 제공.
+- 확인되지 않은 수치를 확정적으로 제시하지 않는다. 출처 불명 시 명시.
+- 과도한 낙관/비관 금지. 객관적·중립적 톤. 서론·마무리 멘트 없이 바로 본론.
+- 금융 전문 용어는 설명 없이 사용한다.
+
+## FMP 플랜 제한 대응
+FMP 호출 시 플랜 제한 에러(ACCESS DENIED) 발생 시: ① 에러를 사용자에게 노출하지 않는다 ② 해당 데이터를 웹 검색으로 즉시 대체한다 ③ 최종 출력에서 데이터 공백 없이 완성된 1-pager를 제공한다.
+</code></pre></div>
+<hr />
+<h2 id="5-1-pager">예제 5. 기업 1-pager — 회사 디자인 반영해보기</h2>
+<p><strong>한 줄 목적.</strong> 예제 4의 1-pager를, 하나증권 디자인 가이드를 입혀 완성도 높은 리포트로 만든다.
+<strong>이 예제로 배우는 것.</strong> <strong>디자인 가이드를 스킬로 등록</strong>해, 이후 모든 산출물(리포트·슬라이드·대시보드)에 일관된 하나 브랜드를 자동 적용하기.</p>
+<p>🔌 <strong>필요 커넥터.</strong> 없음 (예제 4 결과 + 디자인 스킬).</p>
+<p><strong>실습 단계.</strong> 아래 디자인 스킬을 등록 → 예제 4의 1-pager를 "하나 디자인을 적용해 리포트로 다시 만들어줘"라고 요청.</p>
+<p>📋 <strong>복사용 — <code>hana-securities-design</code> 스킬 문서 (SKILL.md)</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>---
+name: hana-securities-design
+description: 하나금융그룹/하나증권 브랜드 디자인 가이드라인. 하나증권, 하나금융, 하나은행 관련 문서·보고서·프레젠테이션·대시보드·차트·UI를 만들 때 사용. '하나' 브랜드가 포함된 산출물, 하나금융그룹 CI/BI 적용이 필요한 작업, 하나증권 리서치 보고서·제안서·IR자료 작성, 하나 브랜드 색상·폰트·레이아웃을 적용해야 하는 모든 경우에 이 스킬을 트리거한다. 사용자가 '하나 스타일', '하나 브랜드', '하나 디자인', '하나증권 포맷' 등을 언급하거나, 하나금융그룹 계열사 관련 시각 산출물을 요청할 때도 적용.
+---
+
+# 하나금융그룹 / 하나증권 디자인 가이드라인
+
+## 핵심 디자인 원칙
+1. **정제된 전문성**: 금융 기관 신뢰감. 깔끔한 그리드, 충분한 여백, 절제된 장식.
+2. **하나 그린 아이덴티티**: 시그니처 틸(Teal) 그린을 일관 적용.
+3. **정보 중심 레이아웃**: 데이터·콘텐츠가 주인공. 시각 요소는 보조.
+
+## 컬러 시스템
+### Primary
+| 역할 | 색상명 | HEX | 용도 |
+|------|--------|------|------|
+| Primary | Hana Teal | #33A794 | 주요 배경, 차트 기본색, CTA |
+| Primary Dark | Hana Deep Green | #005849 | 헤딩, 타이틀, 강조 텍스트 |
+| Brand | Hana Logo Green | #00927A | 로고, 브랜드 마크 |
+| Accent | Hana Red | #C8353E | 로고 액센트, 경고, 하락 지표 |
+
+### Secondary
+| 역할 | 색상명 | HEX | 용도 |
+|------|--------|------|------|
+| Light Teal | Hana Mint | #66BDAD | 인포그래픽, 보조 차트 |
+| Pale Teal | Hana Mist | #D9FFFA | ESG 배지, 연한 배경 |
+| Chart Bar | Hana Aqua | #44AF9D | 바 차트, 진행률 |
+| Network Dark | Hana Forest | #005243 | 어두운 배너, 조직도 헤더 |
+
+### Neutral
+| 역할 | HEX | 용도 |
+|------|------|------|
+| Background | #FFFFFF | 기본 배경 |
+| Surface | #F7F7F7 | 테이블 교차행, 카드 |
+| Border | #E5E5E5 | 구분선, 카드 외곽 |
+| Body Text | #4D4D4D | 본문 |
+| Heading | #333333 | 제목 |
+| Muted | #999999 | 캡션, 단위 |
+
+### 차트 전용 컬러 세트 (순서 지정)
+기본 #33A794 / 보조1 #66BDAD / 보조2 #005849 / 보조3 #B8D4CE / 중립 #CCCCCC / 목표·강조 #44AF9D / 부정·하락 #C8353E
+
+### ESG 컬러 코딩
+- E(환경): 배경 #E8F5F1 / 텍스트 #33A794
+- S(사회): 배경 #F0F8F6 / 텍스트 #66BDAD
+- G(지배구조): 배경 #F5F0EB / 텍스트 #B09D85
+
+## 타이포그래피
+- 한국어 본문: Noto Sans KR (또는 Pretendard) / 영문: Source Sans 3 (또는 Inter)
+- 숫자/데이터: Tabular figures, 우측 정렬
+
+| 용도 | 크기 | 굵기 | 색 |
+|------|------|------|------|
+| H1 | 32–40px | Bold | #005849 |
+| H2 | 24–28px | Bold | #33A794 또는 #333 |
+| H3 | 18–20px | SemiBold | #333 |
+| 본문 | 14–16px | Regular | #4D4D4D |
+| 캡션 | 12px | Regular | #999 |
+| 데이터 수치 | 14–24px | Medium | 틸 또는 블랙 |
+
+## 레이아웃
+- 보고서: A4 가로, 2–3컬럼 / 프레젠테이션: 16:9 / 웹: 12컬럼, max 1280px
+- 여백: 페이지 상하 40 / 좌우 60, 섹션 간 48–64, 카드 패딩 24–32
+- 상단 내비바: [페이지번호] [문서제목] [섹션 네비(현재=bold+underline)] [유틸]
+
+## 테이블
+- 헤더: 연한 틸 민트 배경(#F1F8F6) + 볼드
+- 숫자: 우측 정렬, 천단위 콤마, 단위는 우상단 &quot;(단위: 억 원, %)&quot;
+- 테두리: 상/하단 얇은 실선(#E5E5E5), 세로선 최소화. 합계 행 볼드.
+
+## 차트
+- 바: 기본 #33A794, 목표 #44AF9D, 기준선 #CCCCCC, 라벨은 막대 위 틸 컬러
+- 배경 화이트, 그리드선 최소화
+
+## 배지/태그 (계열사·카테고리)
+- 배경 #F1F8F6 / 텍스트 #005849 / radius 4px / padding 4px 12px / 12px
+
+## React/HTML CSS 변수
+```
+:root{
+  --hana-teal:#33A794; --hana-deep-green:#005849; --hana-logo-green:#00927A; --hana-red:#C8353E;
+  --hana-mint:#66BDAD; --hana-mist:#D9FFFA; --hana-aqua:#44AF9D; --hana-forest:#005243;
+  --hana-white:#FFFFFF; --hana-surface:#F7F7F7; --hana-border:#E5E5E5;
+  --hana-text:#4D4D4D; --hana-heading:#333333; --hana-muted:#999999;
+  --radius-sm:4px; --radius-md:8px; --radius-lg:12px;
+}
+```
+
+## 적용 가이드
+- 보고서: 컬러 HEX 준수, 테이블·차트 패턴 적용, 상단 내비바 배치
+- 프레젠테이션: 타이틀=풀블리드 틸 배경+흰 텍스트 / 콘텐츠=흰 배경+틸 제목 / 데이터=차트·테이블 가이드
+- 웹/대시보드: 상단바 #005849, 카드 흰 배경+1px solid #E5E5E5+radius 8, Primary 버튼 #33A794
+</code></pre></div>
+<p>💡 <strong>가이드.</strong> 이 디자인 스킬은 <strong>예제 7(슬라이드)에서 다시 쓰입니다.</strong> 한 번 등록해두면 1-pager든, 산업 슬라이드든, 제안서든 같은 하나 브랜드 룩으로 자동 정렬됩니다.</p>
+<p>⚠️ <strong>점검·제약.</strong> 디자인은 가독성을 돕는 보조일 뿐, 본문의 출처·기준일·투자권유 금지 규칙은 그대로.</p>
+<hr />
+<h2 id="6">예제 6. 산업 · 밸류체인 분석</h2>
+<p><strong>한 줄 목적.</strong> 한 산업을 밸류체인·해자·경쟁구도 관점에서 투자용으로 구조 분석한다.
+<strong>이 예제로 배우는 것.</strong> 단순 비교표를 넘어, 애널리스트 프레임(밸류체인 분해)으로 산업을 분석하기.</p>
+<p>🔌 <strong>필요 커넥터.</strong> FMP(플레이어 시세·재무), 웹(시장 규모·뉴스).</p>
+<p><strong>실습 단계.</strong> 프로젝트 새 대화 → FMP·웹 검색 켜기 → 분석할 산업을 지정.</p>
+<p>📋 <strong>복사용 프롬프트</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>너는 반도체·AI 하드웨어 섹터를 커버하는 산업 애널리스트다. 엣지AI(Edge AI) 산업을 투자 관점에서 구조 분석하라.
+
+0. 범위 정의 (먼저 할 것): 분석을 시작하기 전에 &quot;엣지AI&quot;의 경계를 명확히 정의하라 — 클라우드 AI 대비 온디바이스/엣지 추론을 무엇으로 보는지, 대상 디바이스군(스마트폰·자동차·산업용·IoT·로봇 등) 중 어디까지를 다루는지 명시하고 시작.
+1. 산업 개요: 시장 규모(현재/전망), 성장 드라이버, 클라우드→엣지로 수요가 이동하는 구조적 이유.
+2. 밸류체인 분해: 반도체(NPU/SoC/메모리) → 모듈/하드웨어 → SW·툴체인(모델 경량화·컴파일러) → 디바이스 OEM → 최종 응용. 각 레이어별 ① 핵심 플레이어 ② 부가가치·마진 구조 ③ 누가 pricing power를 갖는가.
+3. 해자·경쟁구도: 레이어별 진입장벽, 전환비용, 네트워크 효과. 어디가 commoditize되고 어디가 이익을 가져가는가.
+4. 플레이어 매핑: 글로벌 핵심사 + 한국 상장사 proxy.
+5. 강세론 vs 약세론: 핵심 논쟁 포인트.
+
+제약: 모든 숫자(시장규모·성장률·마진)는 출처를 명시하고, 추정치는 &quot;추정&quot;임을 밝힐 것. 범위가 있으면 단일값으로 단정하지 말 것. 결론을 강요하지 말고 어느 레이어가 투자 매력이 높은지를 가설+근거 형태로 제시할 것.
+</code></pre></div>
+<p><strong>출력 포맷.</strong> 범위 정의 → 산업 개요 → 밸류체인 분해 → 해자·경쟁구도 → 플레이어 매핑(표) → 강세/약세론.</p>
+<p>💡 <strong>가이드.</strong> 이 분석 결과가 <strong>예제 7에서 슬라이드(PPTX)의 원재료</strong>가 됩니다. 산업은 자유롭게 바꿔도 됩니다(예: HBM, 전력기기, 비만치료제). 플레이어 매핑 표는 PART 5에서 <strong>엑셀</strong>로 빼기 좋습니다.</p>
+<p>⚠️ <strong>점검·제약.</strong> 시장규모·성장률·마진은 출처 표기, 추정치는 "추정" 명시 · 단일값 단정 금지 · 투자결론 강요 금지(가설+근거).</p>
+<hr />
+<h1 id="part-4">PART 4. 🌆 오후 — 산출물 / 고객 / 컴플라이언스</h1>
+<h2 id="7-pptx">예제 7. 산업 분석 → 슬라이드 (PPTX × 하나 디자인)</h2>
+<p><strong>한 줄 목적.</strong> 예제 6의 산업 분석을, 하나 디자인이 입혀진 발표용 슬라이드(PPTX)로 만든다.
+<strong>이 예제로 배우는 것.</strong> <strong>분석 결과(예제 6) + 디자인 스킬(예제 5) → PPTX 산출물</strong>로 연결하기. 스킬을 쌓아 올리면 분석가가 디자이너 없이도 완성형 자료를 뽑는다.</p>
+<p>🔌 <strong>필요 커넥터.</strong> 없음 (예제 6 결과 입력 + <code>hana-securities-design</code> 스킬 적용).</p>
+<p><strong>실습 단계.</strong> 예제 6의 산업 분석을 만든 뒤(또는 결과를 붙여넣고), 같은 대화에서 아래를 이어서 요청.</p>
+<p>📋 <strong>복사용 프롬프트</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>(예제 6에서 만든 내용 붙임) 엣지AI 산업 분석을 발표용 슬라이드(PPTX)로 만들어줘.
+hana-securities-design 스킬(하나 디자인 가이드)을 적용해줘.
+
+[구성 — 8장 내외]
+1) 표지 (제목·작성일·작성자)
+2) 산업 개요 (시장 규모·성장 드라이버)
+3) 밸류체인 분해 (레이어별 핵심 플레이어·마진)
+4) 해자·경쟁구도
+5) 플레이어 매핑 (글로벌 + 한국 proxy 표)
+6) 강세론 vs 약세론
+7) 투자 시사점 (가설 + 근거)
+8) 유의문구
+
+[규칙] 차트·표는 하나 컬러 팔레트(틸 그린) 적용. 모든 수치 출처·기준일,
+추정치는 &quot;추정&quot; 명시. 투자권유 단정 금지. 표지·마무리에 유의문구.
+</code></pre></div>
+<p><strong>출력 포맷.</strong> 8장 내외 <code>.pptx</code> — 다운로드해 PowerPoint에서 편집·발표.</p>
+<p>💡 <strong>가이드.</strong>
+- <strong>같은 방식으로 "고객 상품 제안서"도.</strong> 산업 슬라이드 대신 "고객 상품 제안서를 PPTX로"라고 요청하면, 동일한 하나 디자인 스킬로 제안서가 나옵니다. (완성 예시: 워크숍 폴더의 <code>하나증권_글로벌인컴플러스_제안서.pptx</code>)
+- <strong>디자인 미세조정.</strong> "표지를 더 미니멀하게", "차트 색을 하나 틸 톤으로 통일"처럼 슬라이드를 콕 집어 수정.
+- <strong>핵심.</strong> 예제 5에서 디자인을 스킬로 등록해 둔 덕에, 이 프롬프트는 "분석을 슬라이드로"만 말해도 브랜드가 자동 적용됩니다.</p>
+<p>⚠️ <strong>점검·제약.</strong> 모든 수치 출처·기준일 · 추정치 명시 · 투자권유 단정 금지 · 유의문구 필수 · 완성 후 <strong>예제 9로 컴플라이언스 검수</strong>(감춰진 슬라이드 포함 전체).</p>
+<h2 id="8">예제 8. 고객용 쉬운 언어 변환 — 아티팩트 사용</h2>
+<p><strong>한 줄 목적.</strong> 리서치·전문 자료를 고객 유형별 쉬운 언어로 재작성한다.
+<strong>이 예제로 배우는 것.</strong> 앞에서 만든 산출물을 청중 맞춤으로 톤·난이도 조절하기 + <strong>결과를 인터랙티브 웹 아티팩트로</strong> 뽑기.</p>
+<p>🔌 <strong>필요 커넥터.</strong> 없음 (앞 산출물 입력).</p>
+<p><strong>실습 단계.</strong> 예제 4·5에서 만든 결과를 붙여넣고, 고객 유형을 지정.</p>
+<p>📋 <strong>복사용 프롬프트</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>아래 자료를 [고객 유형: 입문 / 보수적 / 공격적] 고객용으로 쉽게 다시 써줘.
+
+[처리]
+1) 전문용어는 일상어로 풀이 (괄호로 원용어 병기)
+2) 고객이 알아야 할 핵심 메시지를 맨 앞에
+3) 고객 유형에 맞춰 톤·강조점 조절
+4) 필수 유의문구 포함
+
+[출력 포맷]
+- 짧은 버전 (메시지/카톡용, 3~4문장)
+- 긴 버전 (안내문용)
+
+수익을 단정·약속하거나 과장하지 말고, 끝에 유의문구를 붙여줘.
+
+--- 원자료 ---
+[여기에 붙여넣기]
+</code></pre></div>
+<p><strong>출력 포맷.</strong> 고객 유형별 짧은 버전 / 긴 버전.</p>
+<p>💡 <strong>가이드.</strong> "보수적 고객용"과 "공격적 고객용"을 각각 돌려 톤 차이를 비교해 보세요. 개인 지침에 "쉽게 풀어줘 = 일상어로" 규칙을 넣어두면 더 일관됩니다.</p>
+<p>⚠️ <strong>점검·제약.</strong> 단정적 수익 약속·과장 금지 · 유의문구 포함.</p>
+<h3 id="_5">✨ 한 단계 업그레이드 — "고객 맞춤 안내문 뷰어" 아티팩트</h3>
+<p>텍스트 두 벌로 끝내지 말고, <strong>버튼으로 고객 유형(입문·보수·공격)과 길이(짧게·길게)를 바꾸면 같은 내용이 톤만 달라져 나타나는 한 장짜리 웹페이지</strong>로 만들 수 있습니다. 발표·상담 자리에서 "같은 자료가 고객에 따라 이렇게 달라진다"를 즉석에서 보여주기 좋습니다.</p>
+<p><strong>실습 단계.</strong> 예제 8의 텍스트 결과(또는 원자료)를 만든 다음, 같은 대화에서 아래를 이어서 요청.</p>
+<p>📋 <strong>복사용 프롬프트</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>방금 내용을 &quot;고객 맞춤 안내문 뷰어&quot; 웹 아티팩트로 만들어줘.
+
+[기능]
+- 상단: 원문(전문 자료)을 접어둘 수 있는 작은 박스로
+- 컨트롤: ① 고객 유형 버튼(입문 / 보수적 / 공격적) ② 길이 버튼(짧은 버전 / 긴 버전)
+- 본문: 선택한 고객 유형 × 길이 조합에 맞는 안내문을 표시
+- 전문용어는 아래에 &quot;용어 풀이&quot;로 따로 정리
+- 맨 아래 유의문구를 항상 고정 표시
+
+[데이터] 입문/보수/공격 × 짧게/길게 = 6개 버전을 미리 만들어 버튼으로 전환되게 해줘.
+- 깔끔하고 모바일에서도 보기 좋게.
+
+수익 단정·과장 없이, 유의문구는 항상 보이게 해줘.
+</code></pre></div>
+<p>💡 <strong>가이드.</strong> 아티팩트는 "버튼 누르면 미리 만들어 둔 6개 버전 사이를 전환"하는 방식입니다. 더 많은 고객 유형(예: 연금/세제 관심 고객)이 필요하면 "유형에 'ISA 관심 고객'을 추가해줘"처럼 조합만 늘리면 됩니다. 완성된 화면은 링크 공유 또는 화면 공유로 보여줄 수 있습니다.</p>
+<p>⚠️ <strong>점검.</strong> 아티팩트 안에서도 유의문구·투자권유 금지 규칙은 그대로 적용. 버튼으로 감춰진 버전까지 모두 컴플라이언스를 통과해야 합니다(예제 9로 각 버전 검수 권장).</p>
+<h2 id="9">예제 9. 투자광고 유의문구 점검</h2>
+<p><strong>한 줄 목적.</strong> 광고·콘텐츠를 컴플라이언스 체크리스트로 일괄 검수한다.
+<strong>이 예제로 배우는 것.</strong> 규칙(체크리스트) 기반으로 텍스트를 항목별 통과/실패 판정하기.</p>
+<p>🔌 <strong>필요 커넥터.</strong> 없음 (체크리스트 규칙 + 점검 대상 텍스트 입력).</p>
+<p><strong>실습 단계.</strong> 새 대화 → 점검 대상 텍스트(예제 7·8 산출물이나 부록 B의 더미) + 체크리스트를 함께 붙여넣기.</p>
+<p>📋 <strong>복사용 프롬프트</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>아래 [점검 대상 텍스트]를 [체크리스트] 기준으로 검수해줘.
+
+[처리]
+1) 필수 유의문구 포함 여부 확인
+2) 금지·과장 표현 탐지 (예: &quot;확정 수익&quot;, &quot;원금 보장&quot;, &quot;무조건&quot;)
+3) 항목별로 통과/실패 + 사유
+4) 실패 항목은 수정안 제시
+
+[출력 포맷]
+- 점검 리포트 표: 항목 / 결과(통과·실패) / 사유 / 수정안
+- 표 아래 &quot;종합 의견&quot; 한 줄
+
+규칙 기반으로만 판정하고, 최종 판단은 사람이 확인한다고 명시해줘.
+
+--- 체크리스트 ---
+[부록 B 또는 사내 체크리스트 붙여넣기]
+
+--- 점검 대상 텍스트 ---
+[여기에 붙여넣기]
+</code></pre></div>
+<p><strong>출력 포맷.</strong> 점검 리포트(항목·결과·사유·수정안) 표 + 종합 의견.</p>
+<p>💡 <strong>가이드.</strong> 예제 8 → 예제 9를 연결하면 "생성 → 자동 1차 검수"가 됩니다. 사내 실제 체크리스트가 있으면 부록 B 대신 넣으세요. 단, <strong>최종 책임은 사람</strong>임을 결과에 명시하게 합니다.</p>
+<p>⚠️ <strong>점검·제약.</strong> 규칙 기반 1차 스크리닝일 뿐, <strong>최종 판단은 사람</strong>이 한다는 전제. AI 판정을 그대로 승인 근거로 쓰지 말 것.</p>
+<hr />
+<h1 id="part-5-pptx">PART 5. 다양한 아웃풋 만들기 (엑셀 · 워드 · PPTX · 웹)</h1>
+<blockquote>
+<p>같은 내용도 받는 사람·용도에 따라 형식이 달라집니다. "무엇을 언제 쓰는지"를 익히는 파트입니다.</p>
+</blockquote>
+<h3 id="_6">무엇을 언제?</h3>
+<table>
+<thead>
+<tr>
+<th>형식</th>
+<th>언제 쓰나</th>
+<th>잘 맞는 예제</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>엑셀 (.xlsx)</strong></td>
+<td>표·수치·계산·정렬/필터가 필요할 때</td>
+<td>예제 6(플레이어 매핑 표)</td>
+</tr>
+<tr>
+<td><strong>워드 (.docx)</strong></td>
+<td>보고서·안내문 등 문서로 공유/인쇄할 때</td>
+<td>예제 4·5(기업 1-pager), 8(고객 안내문)</td>
+</tr>
+<tr>
+<td><strong>PPTX (.pptx)</strong></td>
+<td>발표·고객 대면용 슬라이드, 디자인이 중요할 때</td>
+<td>예제 7(산업 분석 슬라이드 · 고객 제안서)</td>
+</tr>
+<tr>
+<td><strong>웹 아티팩트(인터랙티브)</strong></td>
+<td>화면에서 바로 보고 조작(필터·차트·토글)하게 할 때</td>
+<td>예제 2(시황 대시보드), 8(고객 맞춤 안내문 뷰어)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="5-a-6">실습 5-A. 플레이어 매핑 표를 엑셀로 (예제 6 이어서)</h3>
+<p>📋 <strong>복사용 프롬프트</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>방금 만든 산업 분석의 플레이어 매핑 표를 엑셀 파일(.xlsx)로 만들어줘.
+- 시트1: 밸류체인 레이어 × 플레이어 (글로벌 / 한국 proxy)
+- 숫자(시총·마진 등)는 천 단위 구분, 비율은 % 형식
+- 맨 위에 제목과 기준일, 추정치는 셀에 &quot;(추정)&quot; 표기
+- 표 아래 &quot;한 줄 인사이트&quot;도 포함
+</code></pre></div>
+<h3 id="5-b-1-pager-4">실습 5-B. 1-pager를 워드로 (예제 4 이어서)</h3>
+<p>📋 <strong>복사용 프롬프트</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>방금 만든 기업 1-pager를 워드 문서(.docx)로 만들어줘.
+- 제목/기준일은 상단에 크게
+- 섹션 제목(개요·재무·공시·이슈·리스크)은 헤딩 스타일로
+- 재무 스냅샷은 표로
+- 맨 아래 &quot;본 자료는 정보 제공 목적이며 투자권유가 아닙니다.&quot; 문구
+</code></pre></div>
+<h3 id="5-c-2">실습 5-C. 시황을 웹 대시보드(아티팩트)로 (예제 2 이어서)</h3>
+<p>💡 <strong>아티팩트란?</strong> 채팅 옆에 <strong>실제로 작동하는 한 장짜리 웹페이지</strong>가 뜨는 기능입니다. 표 대신 차트로 보거나, 버튼으로 항목을 토글하는 식으로 "보면서 조작"할 수 있습니다.</p>
+<p>📋 <strong>복사용 프롬프트</strong></p>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>방금 만든 모닝 시황을 한 장짜리 웹 대시보드(아티팩트)로 만들어줘.
+- 상단: 지수·환율·금리 카드 (값 + 등락률, 상승=빨강/하락=파랑)
+- 중단: 핵심 뉴스 리스트
+- 하단: 오늘의 관전 포인트
+- 깔끔하고 모바일에서도 보기 좋게
+</code></pre></div>
+<p>💡 <strong>가이드.</strong> 만들어진 엑셀/워드 파일은 다운로드해서 그대로 공유하면 됩니다. 아티팩트는 Replit으로 실제 웹사이트로 배포하거나 화면 공유로 보여줄 수 있습니다.</p>
+<p>⚠️ <strong>점검.</strong> 어떤 형식이든 본문의 점검·제약(출처·기준일·유의문구·투자권유 금지)은 그대로 적용됩니다.</p>
+<hr />
+<h1 id="a">부록 A. 복사용 프롬프트 한눈에 모음</h1>
+<ul>
+<li><strong>예제 1</strong> 데일리 브리핑 (일정 + 메일)</li>
+<li><strong>예제 2</strong> 모닝 시황 브리핑</li>
+<li><strong>예제 3</strong> 모닝 시황 브리핑 자동화 (스킬 × 루틴 × 메일)</li>
+<li><strong>예제 4</strong> 기업 1-pager</li>
+<li><strong>예제 5</strong> 기업 1-pager 디자인 반영 (하나 디자인 스킬)</li>
+<li><strong>예제 6</strong> 산업·밸류체인 분석</li>
+<li><strong>예제 7</strong> 산업 분석 → 슬라이드 (PPTX × 하나 디자인)</li>
+<li><strong>예제 8</strong> 고객용 쉬운 언어 (+ 아티팩트 뷰어)</li>
+<li><strong>예제 9</strong> 유의문구 점검</li>
+<li><strong>PART 5</strong> 엑셀 / 워드 / PPTX / 아티팩트 변환</li>
+</ul>
+<p>(각 프롬프트는 위 본문 해당 섹션의 코드박스를 복사해 쓰세요.)</p>
+<h1 id="b">부록 B. 컴플라이언스 체크리스트</h1>
+<blockquote>
+<p>실습용 예시입니다. 실제 검수는 사내 정식 기준을 따르세요.</p>
+</blockquote>
+<div class="codewrap"><button class="copybtn" type="button" onclick="copyCode(this)">복사</button><pre><code>[필수 포함]
+- &quot;투자 전 설명서·약관을 확인하세요&quot; 또는 동등 문구
+- &quot;원금 손실이 발생할 수 있습니다&quot; (원금비보장 상품)
+- &quot;과거 수익률이 미래 수익을 보장하지 않습니다&quot; (수익률 언급 시)
+- 광고심의/준법감시 관련 표기 자리
+
+[금지·주의 표현]
+- &quot;확정 수익&quot;, &quot;원금 보장&quot;(비보장 상품에), &quot;무조건&quot;, &quot;절대&quot;
+- &quot;최고&quot;, &quot;1위&quot; 등 객관적 근거 없는 최상급 표현
+- 단정적 미래 전망 (&quot;반드시 오른다&quot; 등)
+- 특정 종목 매수·매도 권유로 읽힐 표현
+</code></pre></div>
+<h1 id="c-faq">부록 C. 자주 막히는 곳 (FAQ)</h1>
+<ul>
+<li><strong>커넥터가 안 보여요.</strong> Team/Enterprise는 관리자 승인이 먼저 필요합니다. 개인 플랜이면 설정 → Connectors에서 추가했는지 확인하세요.</li>
+<li><strong>숫자가 이상해요/오래됐어요.</strong> 커넥터를 켰는지, 프롬프트에 "기준일 명시"를 넣었는지 확인. 의심되면 "이 수치 출처와 기준 시점을 다시 알려줘"라고 물으세요.</li>
+<li><strong>포맷이 매번 달라요.</strong> 프로젝트 지침(1-2)에 공통 출력 규칙을 넣고, 그 프로젝트 안에서 작업하세요.</li>
+<li><strong>개인 지침 vs 프로젝트 지침 vs 스킬, 뭘 어디에?</strong> "나"에 대한 건 개인 지침 / "이 업무공간 전반"은 프로젝트 지침 / "이 특정 업무 한 가지"는 스킬.</li>
+<li><strong>결과가 길거나 마음에 안 들어요.</strong> 결론만 다시, 표로 다시, 더 짧게 — <strong>이어서 다듬기</strong>가 핵심입니다. 처음부터 완벽한 프롬프트보다 빠르게 고쳐가는 게 효율적입니다.</li>
+</ul>
+<hr />
+<p><em>본 실습 자료는 교육 목적이며, 포함된 예시·수치·문구는 투자권유가 아닙니다. 실제 업무 적용 시 사내 컴플라이언스 기준을 우선합니다.</em></p>
+    <hr>
+    <p style="font-size:13px;color:var(--muted);margin-top:6px;">
+      본 실습 자료는 <a href="https://axsprints.com/" style="font-weight:700;color:var(--accent);">AX Sprint</a><span style="color:var(--mint);font-weight:700;">.</span> (아리송컴퍼니㈜)가 하나증권 워크숍을 위해 제작했습니다. · arisongcompany@gmail.com
+    </p>
+  </main>
+</div>
+<button class="backtop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>
+function copyCode(btn){
+  var pre=btn.parentElement.querySelector('pre');
+  var t=pre.innerText;
+  function ok(){var o=btn.textContent;btn.textContent='복사됨 ✓';btn.classList.add('done');
+    setTimeout(function(){btn.textContent=o;btn.classList.remove('done');},1500);}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(ok).catch(function(){fallback(t,ok);});
+  } else { fallback(t,ok); }
+}
+function fallback(t,ok){
+  var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');ok();}catch(e){alert('복사 실패 — 직접 선택해 복사하세요.');}
+  document.body.removeChild(ta);
+}
+var bt=document.querySelector('.backtop');
+window.addEventListener('scroll',function(){bt.classList.toggle('show',window.scrollY>500);});
+document.querySelectorAll('nav.toc a').forEach(function(a){
+  a.addEventListener('click',function(){document.querySelector('nav.toc').classList.remove('open');});
+});
+</script>
+</body>
+</html>
